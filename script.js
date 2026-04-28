@@ -318,23 +318,62 @@ async function gantiOPDView() {
 async function muatProfilUnit() {
   const username = getActiveUser();
   
-  // Karena ini asinkron, kita harus menarik daftarnya dulu
+  // 1. Tarik daftar referensi OPD Induk dari server
   const listOPD = await callGAS('getDaftarOPDInduk');
   let selectOpd = document.getElementById('pu_opd_induk');
   let optionsHtml = '<option value="">-- Pilih OPD Induk --</option>';
-  if(listOPD && listOPD.length > 0) {
+  
+  if(listOPD && Array.isArray(listOPD)) {
      listOPD.forEach(opd => { optionsHtml += "<option value='" + opd + "'>" + opd + "</option>"; });
   }
   if(selectOpd) selectOpd.innerHTML = optionsHtml;
   
-  // Lalu tarik profilnya
+  // 2. Tarik data profil spesifik milik user tersebut
   const res = await callGAS('getProfilUnit', { username: username });
+  
   if(res && res.success) {
+    // Isi semua form yang ada
     document.getElementById('pu_opd_induk').value = res.opdInduk || "";
-    // ... isi form lainnya ...
+    document.getElementById('pu_nama_unit').value = res.namaUnit || "";
+    document.getElementById('pu_alamat').value = res.alamat || "";
+    document.getElementById('pu_pimpinan').value = res.pimpinan || "";
+    document.getElementById('pu_jabatan').value = res.jabatan || "";
+    document.getElementById('pu_nip').value = res.nip || "";
+    document.getElementById('pu_pangkat').value = res.pangkat || "";
+    document.getElementById('pu_kelompok').value = res.kelompok || "";
+    
+    // Sesuaikan pilihan kecamatan berdasarkan kelompok
+    if (typeof toggleKecamatanProfil === "function") toggleKecamatanProfil();
+    document.getElementById('pu_kecamatan').value = res.kecamatan || "";
+
+    // Update nama di pojok kiri atas (Sidebar)
+    if(res.namaUnit) { 
+      document.getElementById('opd-name-display').innerText = res.namaUnit; 
+    }
+  } else { 
+    // Jika profil kosong/belum diisi, kosongkan form
+    document.getElementById('formProfilUnit').reset(); 
+  }
+
+  // 3. Eksekusi Logika Kunci Form (Fitur Admin)
+  const isLocked = (statusAplikasi.kunciProfil === 'ON');
+  const formProfil = document.getElementById('formProfilUnit');
+  const btnSimpanProfil = document.getElementById('btnSimpanProfil');
+
+  if (formProfil) {
+    // Buat semua inputan menjadi 'disabled' (tidak bisa diklik) jika dikunci
+    Array.from(formProfil.elements).forEach(el => {
+        if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+            el.disabled = isLocked;
+        }
+    });
+  }
+
+  // Sembunyikan tombol simpan jika dikunci
+  if(btnSimpanProfil) {
+      btnSimpanProfil.style.display = isLocked ? 'none' : 'inline-block';
   }
 }
-
 function switchPage(pageId) {
   // Logic Hide/Show wrapper khusus (Dari App.html dan E-Arsip)
   document.getElementById('app-section').style.display = 'block';
