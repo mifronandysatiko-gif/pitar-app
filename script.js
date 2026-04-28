@@ -132,7 +132,6 @@ async function prosesLogin() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Memverifikasi...';
   
-  // PERHATIKAN BARIS INI: action-nya adalah 'verifikasiLogin'
   const res = await callGAS('verifikasiLogin', { username: user, password: pwd });
   
   if(res.success) {
@@ -140,7 +139,12 @@ async function prosesLogin() {
     btn.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Berhasil! Mengalihkan...';
     
     setTimeout(() => {
-      document.getElementById('login-section').style.display = 'none';
+      // --- PERBAIKAN BUG TAMPILAN ATAS-BAWAH ---
+      const loginSec = document.getElementById('login-section');
+      loginSec.classList.remove('d-flex'); // Hapus paksa CSS Bootstrap yang mengunci tampilan
+      loginSec.classList.add('d-none');    // Tambahkan CSS sembunyi mutlak
+      loginSec.style.display = 'none';     // Cadangan inline
+      
       document.getElementById('app-section').style.display = 'block';
       initApp(res.opdName, res.username); 
     }, 500);
@@ -150,7 +154,6 @@ async function prosesLogin() {
     btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i> Masuk ke Aplikasi';
   }
 }
-
 async function initApp(opdName, username) {
   try {
     // 1. Tampilkan informasi dasar di sidebar
@@ -1072,56 +1075,108 @@ async function cekStatusMutasi() {
 // MODUL STATISTIK DAN BEZZETING
 // ============================================================================
 async function muatUlangStatistik() {
+  // Panggil data statistik dari backend
   const stats = await callGAS('getCompleteDashboardStats', { reqUsername: getActiveUser() });
-  if(stats && stats.formasiTotal) renderSemuaChart(stats);
+  
+  if(stats && stats.formasiTotal) {
+    renderSemuaChart(stats);
+  } else {
+    console.error("Data statistik gagal dimuat atau kosong:", stats);
+  }
 }
 
 function renderSemuaChart(stats) {
-  // Chart rendering code (sama dengan aslinya, tidak menggunakan GAS API secara langsung di sini)
-  document.getElementById('stat-kebutuhan').innerText = stats.formasiTotal.kebutuhan;
-  document.getElementById('stat-terisi').innerText = stats.formasiTotal.terisi;
+  // --- PERBAIKAN BUG DATA 0 DI KARTU ATAS ---
+  if(document.getElementById('count-pns')) document.getElementById('count-pns').innerText = stats.asn.pns || 0;
+  if(document.getElementById('count-pppk')) document.getElementById('count-pppk').innerText = stats.asn.pppk || 0;
+  if(document.getElementById('count-pppk-pw')) document.getElementById('count-pppk-pw').innerText = stats.asn.pppkPw || 0;
+  
+  if(document.getElementById('count-laki')) document.getElementById('count-laki').innerText = stats.gender.l || 0;
+  if(document.getElementById('count-perempuan')) document.getElementById('count-perempuan').innerText = stats.gender.p || 0;
+  if(document.getElementById('count-kawin')) document.getElementById('count-kawin').innerText = stats.kawin.kawin || 0;
+  if(document.getElementById('count-belum')) document.getElementById('count-belum').innerText = stats.kawin.belum || 0;
+  if(document.getElementById('count-janda')) document.getElementById('count-janda').innerText = stats.kawin.janda || 0;
+  if(document.getElementById('count-duda')) document.getElementById('count-duda').innerText = stats.kawin.duda || 0;
+
+  // UPDATE KARTU RINGKASAN TOTAL
+  if(document.getElementById('stat-kebutuhan')) document.getElementById('stat-kebutuhan').innerText = stats.formasiTotal.kebutuhan;
+  if(document.getElementById('stat-terisi')) document.getElementById('stat-terisi').innerText = stats.formasiTotal.terisi;
   
   let selisih = stats.formasiTotal.terisi - stats.formasiTotal.kebutuhan;
   let textSelisih = selisih === 0 ? "Sesuai Formasi" : (selisih > 0 ? "+" + selisih + " (Kelebihan)" : selisih + " (Kekurangan)");
   let cardSelisih = document.getElementById('card-selisih');
+  let statSelisih = document.getElementById('stat-selisih');
   
-  document.getElementById('stat-selisih').innerText = textSelisih;
-  if(selisih === 0) { cardSelisih.className = "card bg-light text-dark shadow-sm border border-success border-3 h-100"; document.getElementById('stat-selisih').className = "fw-bold mb-0 display-6 text-success"; }
-  else if(selisih < 0) { cardSelisih.className = "card bg-light text-dark shadow-sm border border-danger border-3 h-100"; document.getElementById('stat-selisih').className = "fw-bold mb-0 display-6 text-danger"; }
-  else { cardSelisih.className = "card bg-light text-dark shadow-sm border border-warning border-3 h-100"; document.getElementById('stat-selisih').className = "fw-bold mb-0 display-6 text-warning"; }
+  if(statSelisih) statSelisih.innerText = textSelisih;
+  if(cardSelisih && statSelisih) {
+    if(selisih === 0) { cardSelisih.className = "card bg-light text-dark shadow-sm border border-success border-3 h-100"; statSelisih.className = "fw-bold mb-0 display-6 text-success"; }
+    else if(selisih < 0) { cardSelisih.className = "card bg-light text-dark shadow-sm border border-danger border-3 h-100"; statSelisih.className = "fw-bold mb-0 display-6 text-danger"; }
+    else { cardSelisih.className = "card bg-light text-dark shadow-sm border border-warning border-3 h-100"; statSelisih.className = "fw-bold mb-0 display-6 text-warning"; }
+  }
 
+  // --- RENDER GRAFIK CHART.JS ---
   if(cJabatan) cJabatan.destroy();
-  cJabatan = new Chart(document.getElementById('chartJabatan'), { type: 'bar', data: { labels: ['Struktural', 'Fungsional', 'Pelaksana'], datasets: [ { label: 'Kebutuhan (Peta)', data: [stats.jabatan.kebutuhan.struktural, stats.jabatan.kebutuhan.fungsional, stats.jabatan.kebutuhan.pelaksana], backgroundColor: '#dc3545', borderRadius: 4 }, { label: 'Terisi (Pegawai)', data: [stats.jabatan.terisi.struktural, stats.jabatan.terisi.fungsional, stats.jabatan.terisi.pelaksana], backgroundColor: '#198754', borderRadius: 4 } ] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
-  
+  const ctxJabatan = document.getElementById('chartJabatan');
+  if(ctxJabatan) {
+    cJabatan = new Chart(ctxJabatan, { type: 'bar', data: { labels: ['Struktural', 'Fungsional', 'Pelaksana'], datasets: [ { label: 'Kebutuhan (Peta)', data: [stats.jabatan.kebutuhan.struktural, stats.jabatan.kebutuhan.fungsional, stats.jabatan.kebutuhan.pelaksana], backgroundColor: '#dc3545', borderRadius: 4 }, { label: 'Terisi (Pegawai)', data: [stats.jabatan.terisi.struktural, stats.jabatan.terisi.fungsional, stats.jabatan.terisi.pelaksana], backgroundColor: '#198754', borderRadius: 4 } ] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
+  }
+
   if(cEselon) cEselon.destroy();
-  let eselonLabels = [...new Set([...Object.keys(stats.eselon.kebutuhan), ...Object.keys(stats.eselon.terisi)])].sort();
-  let eslKebData = eselonLabels.map(l => stats.eselon.kebutuhan[l] || 0); let eslTerisiData = eselonLabels.map(l => stats.eselon.terisi[l] || 0);
-  cEselon = new Chart(document.getElementById('chartEselon'), { type: 'bar', data: { labels: eselonLabels.length > 0 ? eselonLabels : ['Belum Ada Data'], datasets: [ { label: 'Kebutuhan Kursi', data: eselonLabels.length > 0 ? eslKebData : [0], backgroundColor: '#e83e8c', borderRadius: 4 }, { label: 'Pejabat Terisi', data: eselonLabels.length > 0 ? eslTerisiData : [0], backgroundColor: '#0dcaf0', borderRadius: 4 } ] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
+  const ctxEselon = document.getElementById('chartEselon');
+  if(ctxEselon) {
+    let eselonLabels = [...new Set([...Object.keys(stats.eselon.kebutuhan), ...Object.keys(stats.eselon.terisi)])].sort();
+    let eslKebData = eselonLabels.map(l => stats.eselon.kebutuhan[l] || 0); let eslTerisiData = eselonLabels.map(l => stats.eselon.terisi[l] || 0);
+    cEselon = new Chart(ctxEselon, { type: 'bar', data: { labels: eselonLabels.length > 0 ? eselonLabels : ['Belum Ada Data'], datasets: [ { label: 'Kebutuhan Kursi', data: eselonLabels.length > 0 ? eslKebData : [0], backgroundColor: '#e83e8c', borderRadius: 4 }, { label: 'Pejabat Terisi', data: eselonLabels.length > 0 ? eslTerisiData : [0], backgroundColor: '#0dcaf0', borderRadius: 4 } ] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
+  }
 
   if(cAsn) cAsn.destroy();
-  cAsn = new Chart(document.getElementById('chartASN'), { type: 'doughnut', data: { labels: ['PNS', 'PPPK', 'PPPK Paruh Waktu'], datasets: [{ data: [stats.asn.pns, stats.asn.pppk, stats.asn.pppkPw], backgroundColor: ['#0d6efd', '#198754', '#ffc107'] }] }, options: { plugins: { legend: { position: 'bottom' } } } });
+  const ctxAsn = document.getElementById('chartASN');
+  if(ctxAsn) {
+    cAsn = new Chart(ctxAsn, { type: 'doughnut', data: { labels: ['PNS', 'PPPK', 'PPPK Paruh Waktu'], datasets: [{ data: [stats.asn.pns, stats.asn.pppk, stats.asn.pppkPw], backgroundColor: ['#0d6efd', '#198754', '#ffc107'] }] }, options: { plugins: { legend: { position: 'bottom' } } } });
+  }
 
   if(cGender) cGender.destroy();
-  cGender = new Chart(document.getElementById('chartGender'), { type: 'pie', data: { labels: ['Laki-laki', 'Perempuan'], datasets: [{ data: [stats.gender.l, stats.gender.p], backgroundColor: ['#0dcaf0', '#d63384'] }] }, options: { plugins: { legend: { position: 'bottom' } } } });
+  const ctxGender = document.getElementById('chartGender');
+  if(ctxGender) {
+    cGender = new Chart(ctxGender, { type: 'pie', data: { labels: ['Laki-laki', 'Perempuan'], datasets: [{ data: [stats.gender.l, stats.gender.p], backgroundColor: ['#0dcaf0', '#d63384'] }] }, options: { plugins: { legend: { position: 'bottom' } } } });
+  }
 
   if(cKawin) cKawin.destroy();
-  cKawin = new Chart(document.getElementById('chartKawin'), { type: 'bar', data: { labels: ['Kawin', 'Belum', 'Janda', 'Duda'], datasets: [{ label: 'Jumlah', data: [stats.kawin.kawin, stats.kawin.belum, stats.kawin.janda, stats.kawin.duda], backgroundColor: '#6f42c1', borderRadius: 5 }] }, options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } } });
+  const ctxKawin = document.getElementById('chartKawin');
+  if(ctxKawin) {
+    cKawin = new Chart(ctxKawin, { type: 'bar', data: { labels: ['Kawin', 'Belum', 'Janda', 'Duda'], datasets: [{ label: 'Jumlah', data: [stats.kawin.kawin, stats.kawin.belum, stats.kawin.janda, stats.kawin.duda], backgroundColor: '#6f42c1', borderRadius: 5 }] }, options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } } });
+  }
 
   if(cPendidikan) cPendidikan.destroy();
-  cPendidikan = new Chart(document.getElementById('chartPendidikan'), { type: 'bar', data: { labels: ['SD/SMP', 'SMA/SMK', 'Diploma (D1-D3)', 'Sarjana (D4/S1)', 'Pasca (S2/S3)'], datasets: [{ label: 'Lulusan', data: [stats.pendidikan.sd_smp, stats.pendidikan.sma, stats.pendidikan.diploma, stats.pendidikan.sarjana, stats.pendidikan.pasca], backgroundColor: '#343a40', borderRadius: 5 }] }, options: { indexAxis: 'y', plugins: { legend: { display: false } } } });
+  const ctxPend = document.getElementById('chartPendidikan');
+  if(ctxPend) {
+    cPendidikan = new Chart(ctxPend, { type: 'bar', data: { labels: ['SD/SMP', 'SMA/SMK', 'Diploma (D1-D3)', 'Sarjana (D4/S1)', 'Pasca (S2/S3)'], datasets: [{ label: 'Lulusan', data: [stats.pendidikan.sd_smp, stats.pendidikan.sma, stats.pendidikan.diploma, stats.pendidikan.sarjana, stats.pendidikan.pasca], backgroundColor: '#343a40', borderRadius: 5 }] }, options: { indexAxis: 'y', plugins: { legend: { display: false } } } });
+  }
 
   if(cUsia) cUsia.destroy();
-  cUsia = new Chart(document.getElementById('chartUsia'), { type: 'bar', data: { labels: ['< 30 Thn', '31 - 40 Thn', '41 - 50 Thn', '51 - 58 Thn', '> 58 Thn'], datasets: [{ label: 'Usia Pegawai', data: [stats.usia['<30'], stats.usia['31-40'], stats.usia['41-50'], stats.usia['51-58'], stats.usia['>58']], backgroundColor: '#fd7e14', borderRadius: 5 }] }, options: { plugins: { legend: { display: false } } } });
+  const ctxUsia = document.getElementById('chartUsia');
+  if(ctxUsia) {
+    cUsia = new Chart(ctxUsia, { type: 'bar', data: { labels: ['< 30 Thn', '31 - 40 Thn', '41 - 50 Thn', '51 - 58 Thn', '> 58 Thn'], datasets: [{ label: 'Usia Pegawai', data: [stats.usia['<30'], stats.usia['31-40'], stats.usia['41-50'], stats.usia['51-58'], stats.usia['>58']], backgroundColor: '#fd7e14', borderRadius: 5 }] }, options: { plugins: { legend: { display: false } } } });
+  }
 
   if(cAgama) cAgama.destroy();
-  cAgama = new Chart(document.getElementById('chartAgama'), { type: 'bar', data: { labels: ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Lainnya'], datasets: [{ label: 'Penganut', data: [stats.agama.islam, stats.agama.kristen, stats.agama.katolik, stats.agama.hindu, stats.agama.buddha, stats.agama.lainnya], backgroundColor: '#20c997', borderRadius: 5 }] }, options: { plugins: { legend: { display: false } } } });
+  const ctxAgama = document.getElementById('chartAgama');
+  if(ctxAgama) {
+    cAgama = new Chart(ctxAgama, { type: 'bar', data: { labels: ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Lainnya'], datasets: [{ label: 'Penganut', data: [stats.agama.islam, stats.agama.kristen, stats.agama.katolik, stats.agama.hindu, stats.agama.buddha, stats.agama.lainnya], backgroundColor: '#20c997', borderRadius: 5 }] }, options: { plugins: { legend: { display: false } } } });
+  }
 
   if(cStatus) cStatus.destroy();
-  cStatus = new Chart(document.getElementById('chartStatus'), { type: 'doughnut', data: { labels: ['Aktif', 'Pensiun', 'Mutasi/Tugas', 'CLTN', 'Lainnya'], datasets: [{ data: [stats.status.aktif, stats.status.pensiun, stats.status.mutasi, stats.status.cltn, stats.status.lainnya], backgroundColor: ['#198754', '#6c757d', '#ffc107', '#dc3545', '#0dcaf0'] }] }, options: { plugins: { legend: { position: 'right' } } } });
+  const ctxStatus = document.getElementById('chartStatus');
+  if(ctxStatus) {
+    cStatus = new Chart(ctxStatus, { type: 'doughnut', data: { labels: ['Aktif', 'Pensiun', 'Mutasi/Tugas', 'CLTN', 'Lainnya'], datasets: [{ data: [stats.status.aktif, stats.status.pensiun, stats.status.mutasi, stats.status.cltn, stats.status.lainnya], backgroundColor: ['#198754', '#6c757d', '#ffc107', '#dc3545', '#0dcaf0'] }] }, options: { plugins: { legend: { position: 'right' } } } });
+  }
 
   if(cGolongan) cGolongan.destroy();
-  let golLabels = Object.keys(stats.golongan).sort(); let golData = golLabels.map(l => stats.golongan[l]);
-  cGolongan = new Chart(document.getElementById('chartGolongan'), { type: 'bar', data: { labels: golLabels.length > 0 ? golLabels : ['Belum Ada Data'], datasets: [{ label: 'Pegawai', data: golLabels.length > 0 ? golData : [0], backgroundColor: '#0dcaf0', borderRadius: 5 }] }, options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
+  const ctxGolongan = document.getElementById('chartGolongan');
+  if(ctxGolongan) {
+    let golLabels = Object.keys(stats.golongan).sort(); let golData = golLabels.map(l => stats.golongan[l]);
+    cGolongan = new Chart(ctxGolongan, { type: 'bar', data: { labels: golLabels.length > 0 ? golLabels : ['Belum Ada Data'], datasets: [{ label: 'Pegawai', data: golLabels.length > 0 ? golData : [0], backgroundColor: '#0dcaf0', borderRadius: 5 }] }, options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
+  }
 }
 
 async function muatDataBezzeting() {
