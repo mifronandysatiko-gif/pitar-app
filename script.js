@@ -276,8 +276,9 @@ async function initApp(opdName, username) {
 
   } catch (error) {
     showLoading(false);
+    // TAMPILKAN ERROR ASLINYA KE LAYAR AGAR KITA TAHU PENYEBABNYA
     console.error("Gagal inisialisasi App:", error);
-    alert("Terjadi kesalahan saat memuat aplikasi. Silakan muat ulang halaman.");
+    alert("GAGAL MEMUAT APLIKASI:\n" + error.message + "\n\nSilakan cek Console Browser (F12) untuk detailnya.");
   }
 }
 
@@ -312,6 +313,26 @@ async function gantiOPDView() {
   const activePageId = document.querySelector('.page-section.active').id;
   switchPage(activePageId);
   periksaKotakMasukMutasi();
+}
+
+async function muatProfilUnit() {
+  const username = getActiveUser();
+  
+  // Karena ini asinkron, kita harus menarik daftarnya dulu
+  const listOPD = await callGAS('getDaftarOPDInduk');
+  let selectOpd = document.getElementById('pu_opd_induk');
+  let optionsHtml = '<option value="">-- Pilih OPD Induk --</option>';
+  if(listOPD && listOPD.length > 0) {
+     listOPD.forEach(opd => { optionsHtml += "<option value='" + opd + "'>" + opd + "</option>"; });
+  }
+  if(selectOpd) selectOpd.innerHTML = optionsHtml;
+  
+  // Lalu tarik profilnya
+  const res = await callGAS('getProfilUnit', { username: username });
+  if(res && res.success) {
+    document.getElementById('pu_opd_induk').value = res.opdInduk || "";
+    // ... isi form lainnya ...
+  }
 }
 
 function switchPage(pageId) {
@@ -363,7 +384,7 @@ function switchPage(pageId) {
 async function loadDaftarUnor() {
   document.getElementById('pj_unor_atasan').innerHTML = '<option value="">-- Sedang memuat... --</option>';
   const daftar = await callGAS('getDaftarUnor', { reqUsername: getActiveUser() });
-  dataUnorGlobal = daftar; 
+  dataUnorGlobal = daftar || []; 
   let htmlOpsi = '<option value="">-- Pilih Unor Atasan (Kosongkan jika Induk) --</option>';
   daftar.forEach(function(unor) { htmlOpsi += `<option value="${unor.id}">${unor.label}</option>`; });
   document.getElementById('pj_unor_atasan').innerHTML = htmlOpsi;
@@ -396,7 +417,7 @@ async function muatPohonStruktur() {
 
 async function loadReferensiJabatan() {
   const res = await callGAS('getReferensiJabatan');
-  if (res.success) {
+  if (res && res.success) {
     const listJF = document.getElementById('list_jf'); const listJP = document.getElementById('list_jp');
     if(listJF) listJF.innerHTML = ''; if(listJP) listJP.innerHTML = '';
     res.jf.forEach(function(jabatan) { if(listJF) listJF.innerHTML += `<option value="${jabatan}">`; });
