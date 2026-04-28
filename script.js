@@ -1378,9 +1378,30 @@ async function prosesKirimUsulan() {
   } catch (e) { btn.disabled = false; alert("Kesalahan pembacaan file."); }
 }
 
+// ============================================================================
+// MODUL KONTROL AKSES & VISIBILITAS (DARI ADMIN)
+// ============================================================================
+function terapkanBatasanAkses() {
+  // 1. Matikan/Hidupkan Tombol Tambah Pegawai
+  let btnTambahPegawai = document.getElementById('btn-tambah-pegawai-utama');
+  if (btnTambahPegawai) {
+      btnTambahPegawai.style.display = (statusAplikasi.tambahPegawai) ? 'inline-block' : 'none';
+  }
+
+  // 2. Matikan/Hidupkan Tab Tambah Jabatan
+  let tabTambahJab = document.getElementById('nav-tab-tambah-jabatan');
+  if (tabTambahJab) {
+      tabTambahJab.style.display = (statusAplikasi.tambahJabatan) ? 'block' : 'none';
+  }
+  
+  // 3. Terapkan ulang form profil agar terkunci/terbuka sesuai pengaturan
+  muatProfilUnit();
+}
+
 // NOTE: Tambahkan juga implementasi fungsi-fungsi lainnya (seperti bukaLanjutPPPK, bukaLanjutPPPK_PW, simpanPasswordBaru, dll) 
 // dengan menggunakan pattern 'await callGAS()' seperti contoh-contoh di atas agar file script Anda lengkap dan jalan di Vercel.
 
 // Fungsi-fungsi rendering yang tidak memerlukan komunikasi backend seperti 
 // renderPaginator(), renderTabelPerubahan(), hitungMasaKerjaRealTime() 
+
 // tetap dibiarkan seperti aslinya.
