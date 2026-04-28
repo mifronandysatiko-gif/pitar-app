@@ -15,27 +15,12 @@
     body { background-color: #f0f2f5; }
 
     /* --- CSS DARI APP.HTML --- */
-    .sidebar {
-      background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
-      min-height: 100vh;
-      box-shadow: 4px 0 15px rgba(0,0,0,0.1);
-      position: relative;
-      overflow-y: auto;
-    }
-    .sidebar::before {
-      content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.1) 2px, transparent 2px);
-      background-size: 20px 20px; opacity: 0.5; pointer-events: none;
-    }
+    .sidebar { background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); min-height: 100vh; box-shadow: 4px 0 15px rgba(0,0,0,0.1); position: relative; overflow-y: auto; }
+    .sidebar::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(circle, rgba(255,255,255,0.1) 2px, transparent 2px); background-size: 20px 20px; opacity: 0.5; pointer-events: none; }
     .sidebar-content { position: relative; z-index: 1; }
-    .sidebar a {
-      color: rgba(255, 255, 255, 0.75); padding: 12px 20px; text-decoration: none;
-      display: block; font-weight: 500; border-radius: 8px; margin: 6px 15px;
-      transition: all 0.3s ease; font-size: 0.95rem; cursor: pointer;
-    }
+    .sidebar a { color: rgba(255, 255, 255, 0.75); padding: 12px 20px; text-decoration: none; display: block; font-weight: 500; border-radius: 8px; margin: 6px 15px; transition: all 0.3s ease; font-size: 0.95rem; cursor: pointer; }
     .sidebar a:hover { color: #ffffff; background-color: rgba(255, 255, 255, 0.15); transform: translateX(5px); }
     .sidebar a.active { background-color: #ffffff !important; color: #0d6efd !important; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-    
     .content-area { padding: 30px; }
     .card { border-radius: 14px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important; }
     
@@ -54,15 +39,7 @@
     .tree-node:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
 
     /* --- CSS DARI LAYANAN PPPK (E-ARSIP) --- */
-    #arsip-pppk-wrapper {
-      --bg-dark: #050814; --bg-accent: #0f172a; --neon-blue: #00f0ff; --neon-purple: #7000ff;
-      --glass-bg: rgba(15, 23, 42, 0.85); --glass-border: rgba(255, 255, 255, 0.2);
-      --text-main: #ffffff; --text-muted: #cbd5e1;
-      background-color: var(--bg-dark);
-      background-image: radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.12), transparent 25%), radial-gradient(circle at 85% 30%, rgba(112, 0, 255, 0.12), transparent 25%);
-      background-attachment: fixed; font-family: 'Outfit', sans-serif; color: var(--text-main);
-      min-height: 100vh; padding: 30px; border-radius: 15px;
-    }
+    #arsip-pppk-wrapper { --bg-dark: #050814; --bg-accent: #0f172a; --neon-blue: #00f0ff; --neon-purple: #7000ff; --glass-bg: rgba(15, 23, 42, 0.85); --glass-border: rgba(255, 255, 255, 0.2); --text-main: #ffffff; --text-muted: #cbd5e1; background-color: var(--bg-dark); background-image: radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.12), transparent 25%), radial-gradient(circle at 85% 30%, rgba(112, 0, 255, 0.12), transparent 25%); background-attachment: fixed; font-family: 'Outfit', sans-serif; color: var(--text-main); min-height: 100vh; padding: 30px; border-radius: 15px; }
     #arsip-pppk-wrapper .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.5); color: var(--text-main); overflow: hidden; margin-bottom: 20px; }
     #arsip-pppk-wrapper .glass-header { background: rgba(0, 0, 0, 0.3); border-bottom: 1px solid var(--glass-border); font-weight: 600; padding: 16px 24px; color: #ffffff; }
     #arsip-pppk-wrapper .table-bio td { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #ffffff; }
@@ -91,6 +68,11 @@
 </head>
 <body>
 
+  <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; flex-direction: column;">
+    <div class="spinner-border text-light" style="width: 3rem; height: 3rem;"></div>
+    <h5 class="text-light mt-3 fw-bold loader-text">MEMPROSES DATA...</h5>
+  </div>
+
   <div id="login-section" class="min-vh-100 d-flex align-items-center justify-content-center">
     <div class="card shadow-lg border-0 rounded-4" style="max-width: 950px; width: 95%; overflow: hidden;">
       <div class="row g-0">
@@ -100,9 +82,7 @@
           <h2 class="fw-bold mb-1" style="letter-spacing: 2px; z-index: 1;">PINTAR</h2>
           <h5 class="fw-light mb-4 text-center" style="z-index: 1;">Pusat Informasi dan Tata Kelola Aparatur</h5>
           <hr class="w-25 mx-auto mb-4" style="border-top: 3px solid white; opacity: 0.8; z-index: 1;">
-          <p class="text-center small opacity-75 px-3" style="z-index: 1; line-height: 1.6;">
-            Platform terpadu Pemerintah Kabupaten Pasuruan untuk memutakhirkan dan mengelola data kepegawaian secara akurat, aman, dan <i>real-time</i>.
-          </p>
+          <p class="text-center small opacity-75 px-3" style="z-index: 1; line-height: 1.6;">Platform terpadu Pemerintah Kabupaten Pasuruan untuk memutakhirkan dan mengelola data kepegawaian secara akurat, aman, dan <i>real-time</i>.</p>
         </div>
 
         <div class="col-md-7 p-4 p-md-5 bg-white d-flex flex-column justify-content-center">
@@ -130,13 +110,12 @@
                 <i class="bi bi-eye-slash text-secondary fs-5" id="togglePasswordIcon"></i>
               </span>
             </div>
-            <button class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-sm" id="btnLogin" onclick="prosesLogin()" style="font-size: 1.1rem; letter-spacing: 1px;">
+            <button class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-sm" id="btnLogin" style="font-size: 1.1rem; letter-spacing: 1px;">
               <i class="bi bi-box-arrow-in-right me-2"></i> Masuk ke Aplikasi
             </button>
             <div id="pesan-error" class="text-danger mt-3 text-center fw-bold"></div>
             <div class="text-center mt-4 border-top pt-4">
-              <small class="text-muted d-block mb-1">Mengalami kendala saat masuk aplikasi?</small>
-              <a href="https://wa.me/6285749399927?text=Halo%20Admin%20BKPSDM,%20saya%20mengalami%20kendala%20saat%20login%20ke%20aplikasi%20PINTAR." target="_blank" class="badge bg-light text-dark border p-2 shadow-sm text-decoration-none">
+              <a href="#" target="_blank" class="badge bg-light text-dark border p-2 shadow-sm text-decoration-none">
                 <i class="bi bi-whatsapp me-1 text-success"></i> Hubungi Administrator BKPSDM Kabupaten Pasuruan
               </a>
             </div>
@@ -156,20 +135,15 @@
               <img src="https://lh3.googleusercontent.com/d/1TmutI_aQ8u6be0vNuVKYNqBGWi8N0LeN" alt="Logo" style="width: 75px; margin-bottom: 15px; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));">
               <h4 class="fw-bold mb-0 text-white" style="letter-spacing: 2px;">PINTAR</h4>
               <p class="small text-white-50 mb-0">Kabupaten Pasuruan</p>
-              
               <div class="mt-4 p-2 bg-white bg-opacity-10 rounded-3 border border-light border-opacity-25 shadow-sm">
                 <h6 id="opd-name-display" class="mb-0 fw-bold text-white text-truncate" style="font-size: 0.9rem;">Memuat OPD...</h6>
               </div>
               <input type="hidden" id="user-account-display" value="">
-              
               <div id="box-admin-switcher" style="display: none;" class="mt-3 text-start">
                  <label class="small text-warning fw-bold mb-1"><i class="bi bi-eye"></i> Mode Admin:</label>
-                 <select class="form-select form-select-sm bg-white text-dark border-0 fw-bold shadow-sm" id="admin-opd-switcher" onchange="gantiOPDView()">
-                    <option value="">-- Memuat --</option>
-                 </select>
+                 <select class="form-select form-select-sm bg-white text-dark border-0 fw-bold shadow-sm" id="admin-opd-switcher" onchange="gantiOPDView()"></select>
               </div>
             </div>
-            
             <nav class="mt-3 pb-5">
               <a onclick="switchPage('beranda')" class="active" id="nav-beranda"><i class="bi bi-speedometer2 me-2"></i> Beranda / Dashboard</a>
               <a onclick="switchPage('profil-unit')" id="nav-profil-unit"><i class="bi bi-building me-2"></i> Profil Unit Kerja</a>
@@ -179,15 +153,11 @@
               <a onclick="switchPage('bezzeting')" id="nav-bezzeting" style="display: none;"><i class="bi bi-bar-chart-steps me-2"></i> Bezzeting Jabatan</a>
               <a onclick="switchPage('riwayat')" id="nav-riwayat" style="display: none;"><i class="bi bi-clock-history me-2"></i> Riwayat Pegawai</a>
               <a onclick="switchPage('laporan-rekap')" id="nav-laporan-rekap" style="display: none;"><i class="bi bi-send-check me-2"></i> Pengiriman & SPTJM</a>
-              
               <a onclick="periksaKotakMasukMutasi(true)" id="nav-kotak-masuk" class="text-warning fw-bold" style="cursor:pointer;"><i class="bi bi-bell-fill me-2"></i> Cek Kotak Masuk Mutasi</a>
-              
               <hr class="mx-4 my-3 border-light opacity-25">
-              
               <a onclick="switchPage('admin-panel')" id="nav-admin-panel" class="bg-warning text-dark fw-bold shadow-sm" style="display: none;"><i class="bi bi-shield-lock-fill me-2"></i> Panel Administrator</a>
               <a onclick="switchPage('pencarian-pegawai')" id="nav-pencarian-pegawai" class="text-info fw-bold" style="display: none;"><i class="bi bi-search me-2"></i> Pencarian Pegawai Global</a>
               <a onclick="bukaModalGantiPassword()" id="nav-ganti-password"><i class="bi bi-key me-2"></i> Ganti Password</a>
-              
               <a onclick="logout()" class="bg-white text-danger fw-bold mt-4 mx-3 shadow-sm text-center" style="border-radius: 8px;"><i class="bi bi-box-arrow-right me-2"></i> Keluar Aplikasi</a>
             </nav>
           </div>
@@ -202,196 +172,462 @@
               <div class="col-md-4"><div class="card bg-success text-white mb-3 shadow-sm border-0"><div class="card-body py-4"><h5 class="card-title">PPPK</h5><h1 class="fw-bold" id="count-pppk">0</h1></div></div></div>
               <div class="col-md-4"><div class="card bg-warning text-dark mb-3 shadow-sm border-0"><div class="card-body py-4"><h5 class="card-title">PPPK Paruh Waktu</h5><h1 class="fw-bold" id="count-pppk-pw">0</h1></div></div></div>
             </div>
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="card shadow-sm border-0"><div class="card-header bg-dark text-white fw-bold">Statistik Gender</div>
+                  <div class="card-body"><ul class="list-group list-group-flush"><li class="list-group-item d-flex justify-content-between align-items-center">Laki-laki <span class="badge bg-primary rounded-pill fs-6" id="count-laki">0</span></li><li class="list-group-item d-flex justify-content-between align-items-center">Perempuan <span class="badge bg-danger rounded-pill fs-6" id="count-perempuan">0</span></li></ul></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card shadow-sm border-0"><div class="card-header bg-dark text-white fw-bold">Status Perkawinan</div>
+                  <div class="card-body"><ul class="list-group list-group-flush"><li class="list-group-item d-flex justify-content-between align-items-center">Kawin <span class="badge bg-secondary rounded-pill" id="count-kawin">0</span></li><li class="list-group-item d-flex justify-content-between align-items-center">Belum Kawin <span class="badge bg-secondary rounded-pill" id="count-belum">0</span></li><li class="list-group-item d-flex justify-content-between align-items-center">Janda <span class="badge bg-secondary rounded-pill" id="count-janda">0</span></li><li class="list-group-item d-flex justify-content-between align-items-center">Duda <span class="badge bg-secondary rounded-pill" id="count-duda">0</span></li></ul></div>
+                </div>
+              </div>
             </div>
+          </div>
 
           <div id="profil-unit" class="page-section">
-             </div>
-          
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h3 class="fw-bold text-dark">Profil Instansi / Unit Kerja</h3>
+            </div><hr>
+            <div class="card shadow-sm border-0 mb-4 border-top border-primary border-4">
+              <div class="card-header bg-white text-dark fw-bold py-3"><i class="bi bi-info-circle text-primary"></i> Lengkapi Identitas Unit Kerja & Pimpinan</div>
+              <div class="card-body bg-light p-4">
+                <form id="formProfilUnit">
+                  <div class="row g-4">
+                    <div class="col-md-5">
+                       <label class="form-label fw-bold text-danger"><i class="bi bi-diagram-2"></i> OPD Induk (Hierarki)</label>
+                       <select class="form-select border-danger fw-bold text-dark shadow-sm" id="pu_opd_induk"><option value="">-- Memuat Daftar OPD... --</option></select>
+                    </div>
+                    <div class="col-md-7">
+                       <label class="form-label fw-bold text-primary">Nama Lengkap Unit Kerja / Sekolah / UPT</label>
+                       <input type="text" class="form-control border-primary fw-bold" id="pu_nama_unit">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-primary">Kelompok Unit / Kategori</label>
+                        <select class="form-select border-primary" id="pu_kelompok" onchange="toggleKecamatanProfil()">
+                            <option value="">-- Pilih Kelompok --</option>
+                            <option value="induk">Induk (Dinas/Badan/Setda)</option>
+                            <option value="Asisten Administrasi Umum">Asisten Administrasi Umum</option>
+                            <option value="Asisten Pemerintahan dan Kesejahteraan Rakyat">Asisten Pemerintahan dan Kesejahteraan Rakyat</option>
+                            <option value="Asisten Perekonomian dan Pembangunan">Asisten Perekonomian dan Pembangunan</option>
+                            <option value="Koordinator UPT Pendidikan Wilayah Kecamatan">Koordinator UPT Pendidikan Wilayah Kecamatan</option>
+                            <option value="UPT Satuan Pendidikan SMPN">UPT Satuan Pendidikan SMPN</option>
+                            <option value="RSUD">RSUD</option>
+                            <option value="Puskesmas">Puskesmas</option>
+                            <option value="UPT">UPT Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6" id="box_kecamatan_profil" style="display: none;">
+                        <label class="form-label fw-bold text-danger">Wilayah Kecamatan</label>
+                        <select class="form-select border-danger" id="pu_kecamatan">
+                            <option value="">-- Pilih Kecamatan --</option>
+                            <option value="Bangil">Bangil</option><option value="Beji">Beji</option><option value="Gempol">Gempol</option>
+                            <option value="Gondang Wetan">Gondang Wetan</option><option value="Grati">Grati</option><option value="Kejayan">Kejayan</option>
+                            <option value="Kraton">Kraton</option><option value="Lekok">Lekok</option><option value="Lumbang">Lumbang</option>
+                            <option value="Nguling">Nguling</option><option value="Pandaan">Pandaan</option><option value="Pasrepan">Pasrepan</option>
+                            <option value="Pohjentrek">Pohjentrek</option><option value="Prigen">Prigen</option><option value="Purwodadi">Purwodadi</option>
+                            <option value="Purwosari">Purwosari</option><option value="Puspo">Puspo</option><option value="Rejoso">Rejoso</option>
+                            <option value="Rembang">Rembang</option><option value="Sukorejo">Sukorejo</option><option value="Tosari">Tosari</option>
+                            <option value="Tutur">Tutur</option><option value="Winongan">Winongan</option><option value="Wonorejo">Wonorejo</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                       <label class="form-label fw-bold">Alamat Lengkap Unit Kerja</label>
+                       <textarea class="form-control" id="pu_alamat" rows="2"></textarea>
+                    </div>
+                    <h6 class="mt-4 fw-bold text-success border-bottom pb-2"><i class="bi bi-person-badge"></i> Informasi Pejabat / Pimpinan Unit Kerja</h6>
+                    <div class="col-md-6"><label class="form-label fw-bold">Nama Pimpinan (Kepsek / Kadis / KUPT)</label><input type="text" class="form-control" id="pu_pimpinan"></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">Jabatan Pimpinan</label><input type="text" class="form-control" id="pu_jabatan"></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">NIP Pimpinan</label><input type="text" class="form-control" id="pu_nip"></div>
+                    <div class="col-md-6"><label class="form-label fw-bold">Pangkat / Golongan</label><input type="text" class="form-control" id="pu_pangkat"></div>
+                  </div>
+                  <div class="mt-4 text-end border-top pt-3">
+                     <button type="button" class="btn btn-primary px-5 fw-bold shadow-sm" onclick="simpanProfilUnitBtn()" id="btnSimpanProfil"><i class="bi bi-save"></i> Simpan / Update Profil</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div id="peta-jabatan" class="page-section">
+            <h3 class="fw-bold text-dark mb-4">Manajemen Peta Jabatan</h3>
+            <ul class="nav nav-pills mb-4 shadow-sm bg-white rounded p-2" id="petaTab" role="tablist">
+              <li class="nav-item"><button class="nav-link active fw-bold" data-bs-toggle="pill" data-bs-target="#tab-daftar-jabatan" type="button"><i class="bi bi-card-list"></i> Daftar Jabatan</button></li>
+              <li class="nav-item hide-on-read-only" id="nav-tab-tambah-jabatan">
+                <button class="nav-link fw-bold" data-bs-toggle="pill" data-bs-target="#tab-tambah-jabatan" type="button"><i class="bi bi-plus-circle"></i> Tambah Jabatan Baru</button>
+              </li>
+            </ul>
+
+            <div class="tab-content">
+              <div class="tab-pane fade show active" id="tab-daftar-jabatan">
+                <div class="d-flex justify-content-end mb-3">
+                  <button class="btn btn-secondary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalPohon" onclick="muatPohonStruktur()"><i class="bi bi-diagram-3"></i> Lihat Pohon Hierarki</button>
+                </div>
+                <div class="card shadow-sm border-0">
+                  <div class="card-body p-3">
+                    <div class="table-responsive">
+                      <table class="table table-hover align-middle border">
+                        <thead class="table-light"><tr><th>Nama Unor / Unit</th><th>Jabatan</th><th>Tipe</th><th>Eselon</th><th>BUP</th><th class="text-center">Kebutuhan</th><th class="text-center kolom-aksi">Aksi</th></tr></thead>
+                        <tbody id="tabel-jabatan"><tr><td colspan="7" class="text-center py-4 text-muted">Belum ada data jabatan.</td></tr></tbody>
+                      </table>
+                      <div id="paginasi-jabatan" class="mt-3"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-pane fade" id="tab-tambah-jabatan">
+                <div class="card shadow-sm border-0 mb-4">
+                  <div class="card-header bg-dark text-white"><h5 class="mb-0">1. Input Jabatan Struktural (Unor / Induk)</h5></div>
+                  <div class="card-body bg-white p-4">
+                    <form id="formPetaJabatan">
+                      <div class="row mb-3">
+                        <div class="col-md-12"><label class="form-label fw-bold">Perangkat Daerah</label><input type="text" class="form-control bg-light" id="pj_perangkat_daerah" readonly></div>
+                        <div class="col-md-6 mt-3"><label class="form-label fw-bold">Unor Atasan (Parent)</label><select class="form-select" id="pj_unor_atasan"><option value="">-- Pilih Unor Atasan (Kosongkan jika Induk) --</option></select></div>
+                        <div class="col-md-6 mt-3"><label class="form-label fw-bold">Kelompok</label><input type="text" class="form-control bg-light fw-bold" id="pj_kelompok" value="Struktural" readonly></div>
+                        <div class="col-md-6 mt-3" id="box_kecamatan" style="display: none;"><label class="form-label fw-bold text-primary">Kecamatan</label><select class="form-select border-primary" id="pj_kecamatan"><option value="">-- Pilih Kecamatan --</option><option value="Bangil">Bangil</option></select></div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col-md-6"><label class="form-label fw-bold">Nama Unor</label><input type="text" class="form-control" id="pj_nama_unor"></div>
+                        <div class="col-md-6"><label class="form-label fw-bold">Nama Jabatan Struktural</label><input type="text" class="form-control" id="pj_jabatan"></div>
+                      </div>
+                      <div class="row mb-4">
+                        <div class="col-md-4"><label class="form-label fw-bold">Eselon</label><select class="form-select" id="pj_eselon" onchange="autoBupEselon()"><option value="">-- Pilih Eselon --</option><option value="I.a">I.a</option><option value="I.b">I.b</option><option value="II.a">II.a</option><option value="II.b">II.b</option><option value="III.a">III.a</option><option value="III.b">III.b</option><option value="IV.a">IV.a</option><option value="IV.b">IV.b</option><option value="Non Eselon">Non Eselon</option></select></div>
+                        <div class="col-md-4"><label class="form-label fw-bold">BUP (Batas Usia Pensiun)</label><div class="d-flex gap-3 mt-2"><div class="form-check"><input class="form-check-input" type="radio" name="pj_bup" id="bup58" value="58 Tahun" checked><label class="form-check-label">58 Tahun</label></div><div class="form-check"><input class="form-check-input" type="radio" name="pj_bup" id="bup60" value="60 Tahun"><label class="form-check-label">60 Tahun</label></div></div></div>
+                        <div class="col-md-4"><label class="form-label fw-bold">Jumlah Kebutuhan</label><input type="number" class="form-control bg-light fw-bold text-center" id="pj_kebutuhan" value="1" readonly></div>
+                      </div>
+                      <div class="text-end"><button type="button" class="btn btn-primary px-4" onclick="simpanPetaJabatan()">Simpan Jabatan Struktural</button></div>
+                    </form>
+                  </div>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="card shadow-sm border-success border-2 h-100">
+                      <div class="card-body text-center py-4">
+                        <h5 class="fw-bold text-success">2. Jabatan Fungsional</h5>
+                        <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#modalJF" onclick="siapkanFormJabatan()">+ Tambah Jabatan Fungsional</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow-sm border-info border-2 h-100">
+                      <div class="card-body text-center py-4">
+                        <h5 class="fw-bold text-info">3. Jabatan Pelaksana</h5>
+                        <button class="btn btn-info text-white w-100" data-bs-toggle="modal" data-bs-target="#modalJP" onclick="siapkanFormJabatan()">+ Tambah Jabatan Pelaksana</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="statistik" class="page-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h3 class="fw-bold text-dark">Statistik Analitik Kepegawaian</h3>
+              <div>
+                <button id="btn-export-rekap-opd" class="btn btn-success btn-sm fw-bold shadow-sm me-2" style="display:none;" onclick="exportRekapPegawaiPerOPD()"><i class="bi bi-file-earmark-excel"></i> Export Rekap</button>
+                <button class="btn btn-outline-primary btn-sm fw-bold shadow-sm" onclick="muatUlangStatistik()"><i class="bi bi-arrow-clockwise"></i> Refresh Analitik</button>
+              </div>
+            </div><hr>
+            <div class="row g-3 mb-4 text-center">
+              <div class="col-md-4"><div class="card bg-primary text-white shadow-sm border-0 h-100"><div class="card-body py-3"><h6 class="fw-bold mb-1 opacity-75">Kebutuhan Formasi (Peta)</h6><h2 class="fw-bold mb-0 display-6" id="stat-kebutuhan">0</h2></div></div></div>
+              <div class="col-md-4"><div class="card bg-success text-white shadow-sm border-0 h-100"><div class="card-body py-3"><h6 class="fw-bold mb-1 opacity-75">Pejabat Terisi (Eksisting)</h6><h2 class="fw-bold mb-0 display-6" id="stat-terisi">0</h2></div></div></div>
+              <div class="col-md-4"><div class="card bg-light text-dark shadow-sm border border-2 h-100" id="card-selisih"><div class="card-body py-3"><h6 class="fw-bold mb-1 text-muted">Selisih (Kekurangan/Kelebihan)</h6><h2 class="fw-bold mb-0 display-6" id="stat-selisih">0</h2></div></div></div>
+            </div>
+            <div class="row g-4 mb-4">
+              <div class="col-md-6"><div class="card shadow-sm border-0 p-3 h-100"><h6 class="text-center fw-bold text-primary border-bottom pb-2">Analisis Jabatan</h6><canvas id="chartJabatan"></canvas></div></div>
+              <div class="col-md-6"><div class="card shadow-sm border-0 p-3 h-100"><h6 class="text-center fw-bold text-danger border-bottom pb-2">Analisis Eselon</h6><canvas id="chartEselon"></canvas></div></div>
+            </div>
+            <div class="row g-4 mb-4">
+              <div class="col-md-4"><div class="card shadow-sm border-0 p-3 h-100"><h6 class="text-center fw-bold text-primary border-bottom pb-2">Komposisi ASN</h6><canvas id="chartASN"></canvas></div></div>
+              <div class="col-md-4"><div class="card shadow-sm border-0 p-3 h-100"><h6 class="text-center fw-bold text-danger border-bottom pb-2">Distribusi Gender</h6><canvas id="chartGender"></canvas></div></div>
+              <div class="col-md-4"><div class="card shadow-sm border-0 p-3 h-100"><h6 class="text-center fw-bold text-info border-bottom pb-2">Status Perkawinan</h6><canvas id="chartKawin"></canvas></div></div>
+            </div>
+            <div class="row g-4 mb-4">
+              <div class="col-md-6"><div class="card shadow-sm border-0 p-3 h-100"><h6 class="text-center fw-bold text-dark border-bottom pb-2">Tingkat Pendidikan Terakhir</h6><canvas id="chartPendidikan"></canvas></div></div>
+              <div class="col-md-6"><div class="card shadow-sm border-0 p-3 h-100"><h6 class="text-center fw-bold text-warning border-bottom pb-2">Rentang Usia Pegawai</h6><canvas id="chartUsia"></canvas></div></div>
+            </div>
+            <div class="row g-4 mb-4">
+              <div class="col-md-4"><div class="card shadow-sm border-0 p-3 h-100"><h6 class="text-center fw-bold text-success border-bottom pb-2">Golongan / Ruang</h6><canvas id="chartGolongan"></canvas></div></div>
+              <div class="col-md-4"><div class="card shadow-sm border-0 p-3 h-100"><h6 class="text-center fw-bold text-success border-bottom pb-2">Agama / Kepercayaan</h6><canvas id="chartAgama"></canvas></div></div>
+              <div class="col-md-4"><div class="card shadow-sm border-0 p-3 h-100"><h6 class="text-center fw-bold text-secondary border-bottom pb-2">Status Kepegawaian</h6><canvas id="chartStatus"></canvas></div></div>
+            </div>
+          </div>
+
           <div id="input-pegawai" class="page-section">
-             </div>
-          
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h3 class="fw-bold text-dark">Manajemen Data Pegawai</h3>
+              <div>
+                <select class="form-select d-inline-block w-auto shadow-sm" id="filter-asn" onchange="filterTabelPegawai()"><option value="Semua">Semua Jenis ASN</option><option value="PNS">PNS</option><option value="PPPK">PPPK</option><option value="PPPK PW">PPPK Paruh Waktu</option></select>
+                <button id="btn-export-pegawai" class="btn btn-success shadow-sm ms-2" style="display:none;" onclick="exportPegawaiKeExcel()"><i class="bi bi-file-earmark-excel-fill"></i> Export Excel</button>
+                <button id="btn-tambah-pegawai-utama" class="btn btn-primary shadow-sm ms-2 hide-on-read-only" data-bs-toggle="modal" data-bs-target="#modalPegawai" onclick="resetFormPegawai()"><i class="bi bi-person-plus-fill"></i> Tambah Pegawai</button>
+              </div>
+            </div><hr>
+            <div class="table-responsive bg-white p-3 rounded shadow-sm border">
+              <table class="table table-hover align-middle"><thead class="table-dark"><tr><th>NIP/NRP</th><th>Nama Lengkap</th><th>Jenis ASN</th><th>Jabatan</th><th class="text-center kolom-aksi">Aksi</th></tr></thead><tbody id="tabel-pegawai"><tr><td colspan="5" class="text-center text-muted py-4">Belum ada data pegawai.</td></tr></tbody></table>
+              <div id="paginasi-pegawai" class="mt-3"></div>
+            </div>
           </div>
-      </div>
-    </div>
 
-    </div>
-
-  <div id="layanan-pppk-section" style="display: none;">
-    <div id="arsip-pppk-wrapper">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h3 class="fw-bold mb-0 text-white" style="font-size: 2rem;">E-Arsip PPPK</h3>
-          <p class="text-info mb-0" style="letter-spacing: 1px;">Portal Manajemen Dokumen Pegawai</p>
-        </div>
-        <button onclick="switchPage('input-pegawai')" class="btn btn-outline-light px-4 py-2 rounded-pill fw-medium">
-          <i class="bi bi-arrow-left"></i> Kembali ke Data Pegawai
-        </button>
-      </div>
-
-      <div id="loadingPPPK" class="text-center py-5 my-5" style="display: none;">
-        <div class="spinner-border text-info" style="width: 3rem; height: 3rem;"></div>
-        <h5 class="text-info mt-3 fw-bold">Menarik Data dari Database E-Arsip...</h5>
-      </div>
-
-      <div id="kontenPPPK" style="display: none;">
-        <div class="row g-4">
-          <div class="col-lg-7">
-            <div class="glass-card h-100">
-              <div class="glass-header"><i class="bi bi-person-vcard text-info me-2"></i> Profil Aparatur & Kontrak</div>
-              <div class="card-body p-0">
-                <table class="table-bio w-100 m-0">
-                  <tr><td class="label-bio">Nama Lengkap</td><td id="pppkNama" class="fw-medium text-white"></td></tr>
-                  <tr><td class="label-bio">NIP</td><td id="pppkNip" class="text-white fw-bold" style="letter-spacing: 1px;"></td></tr>
-                  <tr><td class="label-bio">Jabatan</td><td id="pppkJabatan" class="text-white"></td></tr>
-                  <tr><td class="label-bio">Instansi Induk</td><td id="pppkOpd" class="text-white"></td></tr>
-                  <tr><td class="label-bio">Unit Kerja</td><td id="pppkUnitKerja" class="text-white"></td></tr>
-                  <tr><td class="label-bio border-bottom-0">Masa Kontrak</td><td class="border-bottom-0"><span id="pppkAwal" class="text-warning"></span> <span class="text-muted mx-2">s/d</span> <span id="pppkAkhir" class="text-warning"></span></td></tr>
-                </table>
+          <div id="bezzeting" class="page-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h3 class="fw-bold text-dark">Perencanaan SDM & Bezzeting</h3>
+              <div>
+                <button id="btn-export-bezzeting" class="btn btn-success shadow-sm fw-bold me-2" style="display:none;" onclick="exportBezzetingKeExcel()"><i class="bi bi-file-earmark-excel-fill"></i> Export Excel</button>
+                <button class="btn btn-secondary shadow-sm fw-bold" onclick="cetakLaporanSDM()"><i class="bi bi-printer"></i> Cetak Laporan PDF</button>
+              </div>
+            </div><hr>
+            <ul class="nav nav-pills mb-4 shadow-sm bg-white rounded p-2 d-print-none" role="tablist">
+              <li class="nav-item"><button class="nav-link active fw-bold" data-bs-toggle="pill" data-bs-target="#tab-bezzeting-tabel" type="button"><i class="bi bi-bar-chart-steps"></i> 1. Analisis Formasi (Bezzeting)</button></li>
+              <li class="nav-item"><button class="nav-link fw-bold" data-bs-toggle="pill" data-bs-target="#tab-proyeksi" type="button" onclick="muatDataProyeksi()"><i class="bi bi-calendar2-x"></i> 2. Proyeksi Pensiun & Kontrak</button></li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane fade show active" id="tab-bezzeting-tabel">
+                <div class="bg-white p-4 rounded shadow-sm border mb-4">
+                  <div class="text-center mb-4 d-none d-print-block"><h4 class="fw-bold mb-0">LAPORAN BEZZETING PEGAWAI</h4><h5 class="fw-bold text-uppercase mt-1" id="kop-bezzeting-opd">NAMA OPD</h5><hr style="border: 1px solid black;"></div>
+                  <div id="area-pohon-bezzeting" class="p-2"><div class="text-center py-5 text-muted"><div class="spinner-border text-primary"></div><h6 class="mt-3">Menganalisis Formasi...</h6></div></div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="tab-proyeksi">
+                <div class="bg-white p-4 rounded shadow-sm border">
+                  <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">A. Proyeksi Pensiun BUP (PNS & PPPK)</h5>
+                  <div class="row text-center mb-4">
+                    <div class="col-md-4"><div class="card bg-danger text-white shadow-sm border-0 mb-2"><div class="card-body"><h6 class="card-title fw-bold" id="title-pns-1">1 Tahun Kedepan</h6><h1 class="fw-bold display-5 mb-0" id="count-pns-1">0</h1></div></div></div>
+                    <div class="col-md-4"><div class="card bg-warning text-dark shadow-sm border-0 mb-2"><div class="card-body"><h6 class="card-title fw-bold" id="title-pns-5">5 Tahun Kedepan</h6><h1 class="fw-bold display-5 mb-0" id="count-pns-5">0</h1></div></div></div>
+                    <div class="col-md-4"><div class="card bg-info text-white shadow-sm border-0 mb-2"><div class="card-body"><h6 class="card-title fw-bold" id="title-pns-10">10 Tahun Kedepan</h6><h1 class="fw-bold display-5 mb-0" id="count-pns-10">0</h1></div></div></div>
+                  </div>
+                  <h5 class="fw-bold text-success border-bottom pb-2 mb-3 mt-4">B. Proyeksi Berakhirnya Kontrak PPPK</h5>
+                  <div class="row text-center mb-4">
+                    <div class="col-md-4"><div class="card bg-danger text-white shadow-sm border-0 mb-2"><div class="card-body"><h6 class="card-title fw-bold" id="title-pppk-1">1 Tahun Kedepan</h6><h1 class="fw-bold display-5 mb-0" id="count-pppk-1">0</h1></div></div></div>
+                    <div class="col-md-4"><div class="card bg-warning text-dark shadow-sm border-0 mb-2"><div class="card-body"><h6 class="card-title fw-bold" id="title-pppk-5">5 Tahun Kedepan</h6><h1 class="fw-bold display-5 mb-0" id="count-pppk-5">0</h1></div></div></div>
+                    <div class="col-md-4"><div class="card bg-success text-white shadow-sm border-0 mb-2"><div class="card-body"><h6 class="card-title fw-bold" id="title-pppk-10">10 Tahun Kedepan</h6><h1 class="fw-bold display-5 mb-0" id="count-pppk-10">0</h1></div></div></div>
+                  </div>
+                  <hr class="mt-5 border-2 border-secondary">
+                  <h6 class="fw-bold mt-4 text-dark"><i class="bi bi-card-list"></i> Rincian Pegawai:</h6>
+                  <div class="bg-light p-3 rounded border">
+                    <select class="form-select border-primary fw-bold w-50 mb-3" id="select-detail-proyeksi" onchange="renderTabelProyeksi()"><option value="pns1">Pensiun BUP (1 Tahun Kedepan)</option><option value="pns5">Pensiun BUP (5 Tahun Kedepan)</option><option value="pns10">Pensiun BUP (10 Tahun Kedepan)</option><option value="pppk1">PPPK Habis Kontrak (1 Tahun Kedepan)</option><option value="pppk5">PPPK Habis Kontrak (5 Tahun Kedepan)</option><option value="pppk10">PPPK Habis Kontrak (10 Tahun Kedepan)</option></select>
+                    <div class="table-responsive"><table class="table table-bordered table-sm align-middle bg-white table-striped"><thead class="table-dark text-center"><tr><th>No</th><th>Nama Lengkap</th><th>NIP</th><th>Unit Kerja</th><th>Jabatan</th><th id="header-info-proyeksi">Informasi</th></tr></thead><tbody id="body-tabel-proyeksi"><tr><td colspan="6" class="text-center py-4 text-muted">Silakan tunggu...</td></tr></tbody></table></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="col-lg-5">
-            <div class="glass-card mb-4">
-              <div class="glass-header"><i class="bi bi-cloud-arrow-up text-primary me-2"></i> Terminal Unggah Dokumen</div>
+          <div id="riwayat" class="page-section">
+            <h3 class="fw-bold text-dark mb-3">Riwayat Jabatan & Pendidikan</h3><hr>
+            <div class="card shadow-sm border-0 mb-4 bg-white">
               <div class="card-body">
-                
-                <div class="mb-4">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <label class="form-label small d-block text-white mb-0"><i class="bi bi-file-earmark-pdf text-danger me-1"></i> SK Pengangkatan</label>
-                    <div><span id="statSK" class="status-badge"></span> <a id="prevSK" href="#" target="_blank" class="btn btn-sm btn-outline-info d-none py-0 px-2"><i class="bi bi-eye"></i></a></div>
-                  </div>
-                  <div class="d-flex gap-2">
-                    <input type="file" id="fileSK" class="form-control form-control-sm" accept=".pdf">
-                    <button id="btnSK" class="btn btn-sm btn-primary px-3 text-white shadow-none" onclick="prosesUploadPPPK('fileSK', 'SK Pengangkatan', 'btnSK')">Unggah</button>
-                  </div>
+                <label class="form-label fw-bold text-primary">Pilih Pegawai:</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                  <input type="text" class="form-control" id="search-pegawai-riwayat" list="list-pegawai-riwayat" placeholder="Ketik NIP atau Nama Pegawai..." autocomplete="off" onchange="pilihPegawaiRiwayat()">
+                  <datalist id="list-pegawai-riwayat"></datalist>
                 </div>
-
-                <div class="mb-4">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <label class="form-label small d-block text-white mb-0"><i class="bi bi-file-earmark-pdf text-danger me-1"></i> Surat Perjanjian Kerja</label>
-                    <div><span id="statSPK" class="status-badge"></span> <a id="prevSPK" href="#" target="_blank" class="btn btn-sm btn-outline-info d-none py-0 px-2"><i class="bi bi-eye"></i></a></div>
-                  </div>
-                  <div class="d-flex gap-2">
-                    <input type="file" id="fileSPK" class="form-control form-control-sm" accept=".pdf">
-                    <button id="btnSPK" class="btn btn-sm btn-primary px-3 text-white shadow-none" onclick="prosesUploadPPPK('fileSPK', 'SPK', 'btnSPK')">Unggah</button>
-                  </div>
-                </div>
-
-                <div class="mb-2">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <label class="form-label small d-block text-white mb-0"><i class="bi bi-file-earmark-pdf text-danger me-1"></i> SPMT</label>
-                    <div><span id="statSPMT" class="status-badge"></span> <a id="prevSPMT" href="#" target="_blank" class="btn btn-sm btn-outline-info d-none py-0 px-2"><i class="bi bi-eye"></i></a></div>
-                  </div>
-                  <div class="d-flex gap-2">
-                    <input type="file" id="fileSPMT" class="form-control form-control-sm" accept=".pdf">
-                    <button id="btnSPMT" class="btn btn-sm btn-primary px-3 text-white shadow-none" onclick="prosesUploadPPPK('fileSPMT', 'SPMT', 'btnSPMT')">Unggah</button>
-                  </div>
-                </div>
-
+              </div>
+            </div>
+            <div id="area-tampil-riwayat" style="display: none;">
+              <div class="alert alert-info border-info d-flex justify-content-between align-items-center shadow-sm">
+                <div class="d-flex align-items-center"><i class="bi bi-person-badge fs-2 me-3"></i><div><h5 class="mb-0 fw-bold" id="nama-terpilih-riwayat">Nama Pegawai</h5><span id="nip-terpilih-riwayat">NIP: -</span></div></div>
+                <button class="btn btn-success fw-bold shadow-sm" onclick="exportRiwayatKeExcel()"><i class="bi bi-file-earmark-excel"></i> Export Riwayat</button>
+              </div>
+              <div class="row g-4 mt-2">
+                <div class="col-md-12"><div class="card shadow-sm border-0"><div class="card-header bg-dark text-white d-flex justify-content-between align-items-center"><h6 class="mb-0 fw-bold">Riwayat Jabatan</h6><button class="btn btn-sm btn-light text-dark fw-bold" data-bs-toggle="modal" data-bs-target="#modalTambahRJ">+ Tambah</button></div><div class="card-body p-0"><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead class="table-light"><tr><th>Jabatan</th><th>Unit Kerja</th><th>No. SK & Tgl</th><th>TMT</th><th class="text-center">Aksi</th></tr></thead><tbody id="tbody-riwayat-jabatan"></tbody></table></div></div></div></div>
+                <div class="col-md-12"><div class="card shadow-sm border-0"><div class="card-header bg-primary text-white d-flex justify-content-between align-items-center"><h6 class="mb-0 fw-bold">Riwayat Pendidikan</h6><button class="btn btn-sm btn-light text-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalTambahRP">+ Tambah</button></div><div class="card-body p-0"><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead class="table-light"><tr><th>Jenjang</th><th>Program Studi</th><th>Institusi</th><th>Thn Lulus & Ijazah</th><th class="text-center">Aksi</th></tr></thead><tbody id="tbody-riwayat-pendidikan"></tbody></table></div></div></div></div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div id="lanjut-pppk-section" style="display: none;">
-    <div class="lanjut-wrapper">
-      <div class="header-bg-reguler d-flex justify-content-between align-items-center">
-        <div>
-          <h4 class="fw-bold mb-0"><i class="bi bi-building-check me-2"></i> LANJUT PPPK</h4>
-          <small class="opacity-75">Portal Layanan Perpanjangan Kontrak PPPK</small>
-        </div>
-        <button onclick="switchPage('input-pegawai')" class="btn btn-light text-primary fw-bold rounded-pill">
-          <i class="bi bi-arrow-left"></i> Kembali
-        </button>
-      </div>
-
-      <div id="loadingLanjutPPPK" class="text-center py-5 my-5">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
-        <h5 class="text-primary mt-3 fw-bold">Sinkronisasi Database Perpanjangan...</h5>
-      </div>
-
-      <div id="kontenLanjutPPPK" style="display: none;">
-        <div class="card p-4 mb-4 border-top border-primary border-4">
-          <h6 class="text-muted mb-3"><i class="bi bi-person-badge"></i> Identitas Pegawai Terpilih:</h6>
-          <div class="row g-3">
-            <div class="col-md-4"><strong>Nama:</strong> <br><span id="lanjutNama" class="text-primary fw-bold fs-5"></span></div>
-            <div class="col-md-4"><strong>NIP:</strong> <br><span id="lanjutNip" class="text-dark fw-bold"></span></div>
-            <div class="col-md-4"><strong>Unit Kerja:</strong> <br><span id="lanjutUnit"></span></div>
-            <div class="col-md-4"><strong>Jabatan:</strong> <br><span id="lanjutJabatan"></span></div>
-            <div class="col-md-8"><strong>Masa Kontrak:</strong> <br><span id="lanjutAwal" class="text-success fw-bold"></span> <span class="text-muted mx-1">s.d.</span> <span id="lanjutAkhir" class="text-danger fw-bold"></span></div>
+          <div id="laporan-rekap" class="page-section">
+            <h3 class="fw-bold text-dark"><i class="bi bi-send-check"></i> Pengiriman Data & SPTJM</h3><hr>
+            <div class="row g-4">
+              <div class="col-md-8">
+                <div class="card shadow-sm border-0 h-100">
+                  <div class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-clock-history"></i> Data Terakhir Diperbarui</span>
+                    <div class="d-flex gap-2">
+                      <select id="filter-sptjm-admin" class="form-select form-select-sm bg-warning text-dark fw-bold border-0" style="display: none; width: auto;" onchange="muatDataLaporan()"><option value="akun">Hanya Akun Terpilih Saja</option><option value="semua">Tampilkan Seluruh Akun</option></select>
+                      <button class="btn btn-sm btn-success fw-bold border-0 shadow-sm" onclick="cetakLampiranSPTJM()"><i class="bi bi-printer"></i> Cetak Lampiran</button>
+                      <button class="btn btn-sm btn-outline-light" onclick="muatDataLaporan()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                    </div>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive" style="max-height: 450px; overflow-y: auto;">
+                      <table class="table table-hover table-bordered align-middle table-sm mb-0">
+                        <thead class="table-light text-center align-middle" style="position: sticky; top: 0; z-index: 1;"><tr><th width="5%">No</th><th width="15%">Kategori</th><th width="30%">Identitas</th><th width="50%">Rincian Perubahan Data</th></tr></thead>
+                        <tbody id="body-tabel-laporan"><tr><td colspan="4" class="text-center py-5 text-muted"><div class="spinner-border spinner-border-sm text-primary"></div> Menyiapkan data...</td></tr></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card shadow-sm border-primary border-2 h-100 hide-on-read-only">
+                  <div class="card-header bg-primary text-white fw-bold"><i class="bi bi-file-earmark-check"></i> Proses Validasi & SPTJM</div>
+                  <div class="card-body bg-light">
+                    <h6 class="fw-bold text-dark mb-2">Langkah 1: Unduh Draft SPTJM</h6>
+                    <button class="btn btn-outline-primary w-100 fw-bold shadow-sm mb-4" onclick="unduhTemplateSPTJM()"><i class="bi bi-download"></i> Unduh Draft SPTJM</button>
+                    <h6 class="fw-bold text-dark mb-2">Langkah 2: Unggah SPTJM Ber-TTE</h6>
+                    <form id="formUploadSPTJM">
+                      <div class="mb-3"><input class="form-control border-primary" type="file" id="file_sptjm" accept="application/pdf" required><small class="text-danger fw-bold d-block mt-1">Format wajib PDF (Maks. 2 MB)</small></div>
+                      <button type="button" class="btn btn-success w-100 fw-bold shadow-sm" id="btnKirimSPTJM" onclick="kirimDokumenSPTJM()"><i class="bi bi-cloud-upload"></i> Kirim Data & SPTJM</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <ul class="nav nav-pills nav-pills-reguler mb-4" id="lanjutPppkTab" role="tablist">
-          <li class="nav-item">
-            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-pengusulan" type="button"><i class="bi bi-file-earmark-text"></i> Form Pengusulan Perpanjangan</button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-spk-baru" type="button"><i class="bi bi-printer"></i> Unduh & Upload SPK Baru</button>
-          </li>
-        </ul>
-
-        <div class="tab-content">
-          <div class="tab-pane fade show active" id="tab-pengusulan">
-             </div>
-          <div class="tab-pane fade" id="tab-spk-baru">
-             </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="lanjut-pppk-pw-section" style="display: none;">
-    <div class="lanjut-wrapper">
-      <div class="header-bg-pw d-flex justify-content-between align-items-center">
-        <div>
-          <h4 class="fw-bold mb-0"><i class="bi bi-clock-history me-2"></i> LANJUT PPPK PARUH WAKTU</h4>
-          <small class="opacity-75">Portal Layanan Perpanjangan Kontrak Khusus PPPK Paruh Waktu</small>
-        </div>
-        <button onclick="switchPage('input-pegawai')" class="btn btn-light text-danger fw-bold rounded-pill">
-          <i class="bi bi-arrow-left"></i> Kembali
-        </button>
-      </div>
-
-      <div id="loadingLanjutPPPK_PW" class="text-center py-5 my-5">
-        <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;"></div>
-        <h5 class="text-danger mt-3 fw-bold">Sinkronisasi Database Paruh Waktu...</h5>
-      </div>
-
-      <div id="kontenLanjutPPPK_PW" style="display: none;">
-        <div class="card p-4 mb-4 border-top border-danger border-4">
-          <h6 class="text-muted mb-3"><i class="bi bi-person-badge"></i> Identitas Pegawai Paruh Waktu Terpilih:</h6>
-          <div class="row g-3">
-            <div class="col-md-4"><strong>Nama:</strong> <br><span id="lanjutNama_PW" class="text-danger fw-bold fs-5"></span></div>
-            <div class="col-md-4"><strong>NIP:</strong> <br><span id="lanjutNip_PW" class="text-dark fw-bold"></span></div>
-            <div class="col-md-4"><strong>Unit Kerja:</strong> <br><span id="lanjutUnit_PW"></span></div>
-            <div class="col-md-4"><strong>Jabatan:</strong> <br><span id="lanjutJabatan_PW"></span></div>
-            <div class="col-md-8"><strong>Masa Kontrak:</strong> <br><span id="lanjutAwal_PW" class="text-success fw-bold"></span> <span class="text-muted mx-1">s.d.</span> <span id="lanjutAkhir_PW" class="text-danger fw-bold"></span></div>
+          <div id="admin-panel" class="page-section">
+            <h3 class="fw-bold text-danger"><i class="bi bi-shield-lock-fill"></i> Panel Administrator</h3><hr>
+            <ul class="nav nav-tabs fw-bold mb-4" id="adminTabs" role="tablist">
+              <li class="nav-item"><button class="nav-link active text-dark" data-bs-toggle="tab" data-bs-target="#panel-akun" type="button"><i class="bi bi-people-fill"></i> Manajemen Akun</button></li>
+              <li class="nav-item"><button class="nav-link text-dark" data-bs-toggle="tab" data-bs-target="#panel-template" type="button" onclick="muatTemplateAdmin()"><i class="bi bi-file-earmark-code"></i> Pengaturan Teks SPTJM</button></li>
+              <li class="nav-item"><button class="nav-link text-dark" data-bs-toggle="tab" data-bs-target="#panel-persetujuan" type="button" onclick="muatPersetujuanAdmin()"><i class="bi bi-check2-square"></i> Persetujuan Perubahan Data</button></li>
+              <li class="nav-item"><button class="nav-link text-dark" data-bs-toggle="tab" data-bs-target="#panel-layanan" type="button" onclick="muatPengaturanAplikasi()"><i class="bi bi-sliders"></i> Pengaturan Sistem & Layanan</button></li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane fade show active" id="panel-akun">
+                <div class="d-flex justify-content-end mb-3"><button class="btn btn-primary shadow-sm fw-bold" onclick="bukaModalAkun()"><i class="bi bi-person-plus-fill"></i> Buat Akun Baru</button></div>
+                <div class="card shadow-sm border-0 mb-4"><div class="card-body p-0"><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead class="table-light"><tr><th class="text-center">No</th><th>Username</th><th>Nama OPD</th><th class="text-center">Role</th><th class="text-center">Status</th><th class="text-center">Kontrol</th></tr></thead><tbody id="tbody-admin-akun"></tbody></table></div></div></div>
+              </div>
+              <div class="tab-pane fade" id="panel-template">
+                <div class="card shadow-sm border-danger border-2"><div class="card-body bg-light"><textarea id="admin_template_html" class="form-control font-monospace border-dark" rows="18" style="font-size: 13px; background-color: #212529; color: #00ff00;"></textarea><div class="text-end mt-3"><button class="btn btn-danger fw-bold px-5" onclick="simpanTemplateAdminBtn()"><i class="bi bi-save"></i> Simpan Template</button></div></div></div>
+              </div>
+              <div class="tab-pane fade" id="panel-persetujuan">
+                <div class="card shadow-sm border-primary border-2"><div class="card-body p-0"><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead class="table-light text-center"><tr><th>Unit Pengusul</th><th>Tipe</th><th>Identitas</th><th>SPTJM</th><th>Rincian</th><th>Aksi Keputusan</th></tr></thead><tbody id="tbody-admin-persetujuan"></tbody></table></div></div></div>
+              </div>
+              <div class="tab-pane fade" id="panel-layanan">
+                <div class="card shadow-sm border-success border-2 mb-4"><div class="card-header bg-success text-white fw-bold">Kontrol Layanan Eksternal</div><div class="card-body bg-light p-4"><div class="list-group"><div class="list-group-item d-flex justify-content-between align-items-center py-3"><div><h6 class="mb-0 fw-bold">E-Arsip PPPK</h6></div><div class="form-check form-switch fs-4"><input class="form-check-input" type="checkbox" id="toggle_earsip"></div></div><div class="list-group-item d-flex justify-content-between align-items-center py-3"><div><h6 class="mb-0 fw-bold">LANJUT PPPK (Reguler)</h6></div><div class="form-check form-switch fs-4"><input class="form-check-input" type="checkbox" id="toggle_lanjut"></div></div><div class="list-group-item d-flex justify-content-between align-items-center py-3"><div><h6 class="mb-0 fw-bold">LANJUT PPPK PW (Paruh Waktu)</h6></div><div class="form-check form-switch fs-4"><input class="form-check-input" type="checkbox" id="toggle_lanjut_pw"></div></div></div></div></div>
+                <div class="card shadow-sm border-danger border-2 mb-4"><div class="card-header bg-danger text-white fw-bold">Batasan Akses Operator</div><div class="card-body bg-light p-4"><div class="list-group"><div class="list-group-item d-flex justify-content-between align-items-center py-3"><div><h6 class="mb-0 fw-bold">Izin Tambah Pegawai Baru</h6></div><div class="form-check form-switch fs-4"><input class="form-check-input" type="checkbox" id="toggle_tambah_pegawai"></div></div><div class="list-group-item d-flex justify-content-between align-items-center py-3"><div><h6 class="mb-0 fw-bold">Izin Tambah Jabatan Baru</h6></div><div class="form-check form-switch fs-4"><input class="form-check-input" type="checkbox" id="toggle_tambah_jabatan"></div></div><div class="list-group-item d-flex justify-content-between align-items-center py-3"><div><h6 class="mb-0 fw-bold text-danger">Kunci Profil Unit Kerja</h6></div><div class="form-check form-switch fs-4"><input class="form-check-input" type="checkbox" id="toggle_kunci_profil"></div></div></div></div></div>
+                <div class="text-end"><button class="btn btn-dark fw-bold px-5 shadow-sm btn-lg" onclick="simpanPengaturanAplikasiBtn()"><i class="bi bi-save"></i> Simpan Seluruh Pengaturan</button></div>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <ul class="nav nav-pills nav-pills-pw mb-4" id="lanjutPppkTab_PW" role="tablist">
-          <li class="nav-item">
-            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-pengusulan-pw" type="button"><i class="bi bi-file-earmark-text"></i> Form Pengusulan (Tribulan)</button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-spk-baru-pw" type="button"><i class="bi bi-printer"></i> Unduh & Upload SPK Baru</button>
-          </li>
-        </ul>
+          <div id="pencarian-pegawai" class="page-section">
+            <h3 class="fw-bold text-info"><i class="bi bi-globe2"></i> Database Pegawai Kabupaten</h3><hr>
+            <div class="card shadow-sm border-info border-top border-4 mb-4">
+              <div class="card-body bg-light p-4">
+                <form id="formCariPegawaiGlobal">
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-4"><label class="form-label fw-bold">Kata Kunci (NIP / Nama)</label><input type="text" class="form-control border-info" id="cari_keyword"></div>
+                    <div class="col-md-4"><label class="form-label fw-bold">Instansi / Unit Kerja</label><select class="form-select border-info" id="cari_opd" onclick="muatOpsiOpdPencarian()"><option value="">-- Semua Instansi --</option></select></div>
+                    <div class="col-md-2"><label class="form-label fw-bold">Jenis ASN</label><select class="form-select border-info" id="cari_jenis"><option value="">-- Semua --</option><option value="PNS">PNS</option><option value="PPPK">PPPK</option><option value="PPPK PW">PPPK Paruh Waktu</option></select></div>
+                    <div class="col-md-2"><label class="form-label fw-bold">Status Pegawai</label><select class="form-select border-info" id="cari_status"><option value="">-- Semua --</option><option value="Aktif">Aktif</option><option value="Pensiun">Pensiun</option><option value="Mutasi Keluar">Mutasi Keluar</option><option value="Penugasan Keluar">Ditugaskan Keluar</option><option value="CLTN">CLTN</option></select></div>
+                  </div>
+                  <div class="row g-3 pt-3 border-top">
+                    <div class="col-md-3"><label class="form-label fw-bold text-secondary">Nama Jabatan</label><input type="text" class="form-control" id="cari_jabatan"></div>
+                    <div class="col-md-3"><label class="form-label fw-bold text-secondary">Jenis Jabatan</label><select class="form-select" id="cari_jenis_jabatan"><option value="">-- Semua Jenis --</option><option value="Struktural">Struktural</option><option value="Fungsional">Fungsional</option><option value="Pelaksana">Pelaksana</option></select></div>
+                    <div class="col-md-2"><label class="form-label fw-bold text-secondary">Eselon</label><select class="form-select" id="cari_eselon"><option value="">-- Semua Eselon --</option><option value="II.a">II.a</option><option value="II.b">II.b</option><option value="III.a">III.a</option><option value="III.b">III.b</option><option value="IV.a">IV.a</option><option value="IV.b">IV.b</option><option value="Non Eselon">Non Eselon</option></select></div>
+                    <div class="col-md-2"><label class="form-label fw-bold text-secondary">Pendidikan</label><select class="form-select" id="cari_pendidikan"><option value="">-- Semua --</option><option value="SD/SMP">SD / SMP</option><option value="SMA/SMK">SMA / SMK</option><option value="Diploma">Diploma (D1-D3)</option><option value="Sarjana">Sarjana (D4/S1)</option><option value="Pasca">Pasca (S2/S3)</option></select></div>
+                    <div class="col-md-2 d-flex align-items-end"><button type="button" class="btn btn-info text-white w-100 fw-bold shadow-sm" onclick="eksekusiPencarianGlobal()"><i class="bi bi-search"></i> Temukan</button></div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="card shadow-sm border-0">
+              <div class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center"><span>Hasil Pencarian</span><span class="badge bg-info text-dark" id="total_hasil_pencarian">0 Data Ditemukan</span></div>
+              <div class="card-body p-0"><div class="table-responsive"><table class="table table-hover align-middle mb-0 table-striped"><thead class="table-light text-center"><tr><th>No</th><th>Identitas</th><th>Instansi</th><th>Jabatan</th><th>Pendidikan</th><th>Status</th></tr></thead><tbody id="body-tabel-pencarian"></tbody></table><div id="paginasi-pencarian" class="p-3 border-top bg-white"></div></div></div>
+            </div>
+          </div>
 
-        <div class="tab-content">
-          <div class="tab-pane fade show active" id="tab-pengusulan-pw">
-             </div>
-          <div class="tab-pane fade" id="tab-spk-baru-pw">
-             </div>
         </div>
       </div>
     </div>
-  </div>
+
+    <div class="modal fade" id="modalPohon" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content"><div class="modal-header bg-secondary text-white"><h5 class="modal-title fw-bold">Pohon Struktur Peta Jabatan</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-light" id="area-pohon-struktur"><div class="text-center text-muted my-4">Memuat struktur hierarki...</div></div></div></div></div>
+    
+    <div class="modal fade" id="modalJF" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header bg-success text-white"><h5 class="modal-title fw-bold">Input Jabatan Fungsional</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="formJF"><div class="mb-3"><label class="form-label fw-bold">Unor Atasan Langsung</label><select class="form-select" id="jf_atasan" onchange="otomatisUnorInduk('jf')" required><option value="">-- Pilih Unor Atasan --</option></select></div><div class="mb-3"><label class="form-label fw-bold">Unor Induk (Otomatis)</label><input type="text" class="form-control bg-light" id="jf_induk" readonly></div><div class="mb-3"><label class="form-label fw-bold">Nama Jabatan Fungsional</label><input type="text" class="form-control border-success" id="jf_nama" list="list_jf" placeholder="Ketik atau klik untuk mencari jabatan..." autocomplete="off"><datalist id="list_jf"></datalist></div><div class="row"><div class="col-6"><label class="form-label fw-bold">BUP</label><div class="d-flex gap-3"><div class="form-check"><input class="form-check-input" type="radio" name="jf_bup" value="58 Tahun" checked><label class="form-check-label">58 Thn</label></div><div class="form-check"><input class="form-check-input" type="radio" name="jf_bup" value="60 Tahun"><label class="form-check-label">60 Thn</label></div></div></div><div class="col-6"><label class="form-label fw-bold">Jumlah Kebutuhan</label><input type="number" class="form-control border-success" id="jf_kebutuhan" value="1" min="1" required></div></div></form></div><div class="modal-footer border-0"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button><button type="button" class="btn btn-success" onclick="simpanJF()">Simpan JF</button></div></div></div></div>
+    
+    <div class="modal fade" id="modalJP" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header bg-info text-white"><h5 class="modal-title fw-bold">Input Jabatan Pelaksana</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="formJP"><div class="mb-3"><label class="form-label fw-bold">Unor Atasan Langsung</label><select class="form-select" id="jp_atasan" onchange="otomatisUnorInduk('jp')" required><option value="">-- Pilih Unor Atasan --</option></select></div><div class="mb-3"><label class="form-label fw-bold">Unor Induk (Otomatis)</label><input type="text" class="form-control bg-light" id="jp_induk" readonly></div><div class="mb-3"><label class="form-label fw-bold">Nama Jabatan Pelaksana</label><input type="text" class="form-control border-info" id="jp_nama" list="list_jp" placeholder="Ketik atau klik untuk mencari jabatan..." autocomplete="off"><datalist id="list_jp"></datalist></div><div class="row"><div class="col-6"><label class="form-label fw-bold">BUP</label><div class="d-flex gap-3"><div class="form-check"><input class="form-check-input" type="radio" name="jp_bup" value="58 Tahun" checked><label class="form-check-label">58 Thn</label></div><div class="form-check"><input class="form-check-input" type="radio" name="jp_bup" value="60 Tahun"><label class="form-check-label">60 Thn</label></div></div></div><div class="col-6"><label class="form-label fw-bold">Jumlah Kebutuhan</label><input type="number" class="form-control border-info" id="jp_kebutuhan" value="1" min="1" required></div></div></form></div><div class="modal-footer border-0"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button><button type="button" class="btn btn-info text-white" onclick="simpanJP()">Simpan Pelaksana</button></div></div></div></div>
+    
+    <div class="modal fade" id="modalEditJabatan" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog"><div class="modal-content border-0 shadow"><div class="modal-header bg-warning"><h5 class="modal-title fw-bold text-dark">Edit Data Jabatan</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="formEditJabatan"><input type="hidden" id="edit_jab_id"><div class="mb-3"><label class="form-label text-muted">Tipe Jabatan</label><input type="text" class="form-control bg-light text-muted" id="edit_jab_tipe" readonly></div><div id="box_edit_unor" style="display:none;"><div class="mb-3"><label class="form-label fw-bold">Nama Unor (Unit)</label><input type="text" class="form-control" id="edit_jab_namaunor"></div><div class="mb-3"><label class="form-label fw-bold">Eselon</label><select class="form-select" id="edit_jab_eselon"><option value="I.a">I.a</option><option value="I.b">I.b</option><option value="II.a">II.a</option><option value="II.b">II.b</option><option value="III.a">III.a</option><option value="III.b">III.b</option><option value="IV.a">IV.a</option><option value="IV.b">IV.b</option><option value="Non Eselon">Non Eselon</option></select></div></div><div class="mb-3"><label class="form-label fw-bold">Nama Jabatan</label><input type="text" class="form-control border-warning" id="edit_jab_nama"></div><div class="row"><div class="col-6"><label class="form-label fw-bold">BUP</label><select class="form-select" id="edit_jab_bup"><option value="58 Tahun">58 Tahun</option><option value="60 Tahun">60 Tahun</option></select></div><div class="col-6"><label class="form-label fw-bold">Kebutuhan</label><input type="number" class="form-control" id="edit_jab_kebutuhan" min="1"></div></div></form></div><div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button><button type="button" class="btn btn-warning fw-bold" onclick="simpanEditJabatan()">Update Jabatan</button></div></div></div></div>
+
+    <div class="modal fade" id="modalPegawai" tabindex="-1" data-bs-backdrop="static">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white"><h5 class="modal-title fw-bold">Formulir Data Pegawai</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" onclick="bersihkanModal()"></button></div>
+          <div class="modal-body bg-light">
+            <div class="card border-primary mb-4 shadow-sm"><div class="card-body bg-white"><label class="form-label fw-bold text-primary">Pilih Jenis ASN Terlebih Dahulu <span class="text-danger">*</span></label><select class="form-select border-primary fw-bold" id="peg_jenis_asn" onchange="aturLogikaFormASN()" required><option value="">-- Pilih Jenis ASN --</option><option value="PNS">Pegawai Negeri Sipil (PNS)</option><option value="PPPK">PPPK</option><option value="PPPK PW">PPPK Paruh Waktu</option></select></div></div>
+            <div id="bungkus-form-pegawai" style="display: none;">
+              <form id="formPegawai">
+                <input type="hidden" id="peg_id_edit" value=""><input type="hidden" id="peg_bup_umur" value="58">
+                <ul class="nav nav-tabs fw-bold" id="tabPegawai" role="tablist">
+                  <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab1" type="button">1. Data Pribadi</button></li>
+                  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab2" type="button">2. Gol & Masa Kerja</button></li>
+                  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab3" type="button">3. Jabatan & Unit</button></li>
+                  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab4" type="button">4. Pendidikan & Status</button></li>
+                </ul>
+                <div class="tab-content bg-white p-4 border border-top-0 rounded-bottom shadow-sm">
+                  <div class="tab-pane fade show active" id="tab1">
+                    <div class="row g-3">
+                      <div class="col-md-2"><label class="form-label">Gelar Depan</label><input type="text" class="form-control" id="peg_gelar_dpn"></div><div class="col-md-7"><label class="form-label fw-bold">Nama Lengkap</label><input type="text" class="form-control" id="peg_nama" style="text-transform: uppercase;" required></div><div class="col-md-3"><label class="form-label">Gelar Belakang</label><input type="text" class="form-control" id="peg_gelar_blk"></div>
+                      <div class="col-md-6"><label class="form-label fw-bold">NIP / NRP</label><input type="text" class="form-control" id="peg_nip" oninput="kalkulasiOtomatisNIP()" maxlength="18" required><small class="text-success fw-bold" id="info_nip"></small></div><div class="col-md-6"><label class="form-label fw-bold">NIK</label><input type="text" class="form-control" id="peg_nik" maxlength="16" required></div>
+                      <div class="col-md-4"><label class="form-label">NPWP</label><input type="text" class="form-control" id="peg_npwp"></div><div class="col-md-4"><label class="form-label">No. HP</label><input type="text" class="form-control" id="peg_hp"></div><div class="col-md-4"><label class="form-label">Email</label><input type="email" class="form-control" id="peg_email"></div>
+                      <div class="col-md-3"><label class="form-label fw-bold">Gender</label><select class="form-select" id="peg_gender"><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select></div><div class="col-md-6"><label class="form-label fw-bold">Tempat Lahir</label><input type="text" class="form-control" id="peg_tempat_lahir" style="text-transform: uppercase;"></div><div class="col-md-3"><label class="form-label fw-bold">Tanggal Lahir</label><input type="date" class="form-control" id="peg_tgl_lahir" onchange="hitungBUP()"></div>
+                      <div class="col-md-6"><label class="form-label fw-bold">Status Perkawinan</label><select class="form-select" id="peg_kawin"><option value="Belum Kawin">Belum Kawin</option><option value="Kawin">Kawin</option><option value="Janda">Janda</option><option value="Duda">Duda</option></select></div><div class="col-md-6"><label class="form-label fw-bold">Agama</label><select class="form-select" id="peg_agama" onchange="cekAgamaLain()"><option value="Islam">Islam</option><option value="Kristen">Kristen</option><option value="Katolik">Katolik</option><option value="Hindu">Hindu</option><option value="Buddha">Buddha</option><option value="Lainnya">Lainnya...</option></select><input type="text" class="form-control mt-2" id="peg_agama_lain" style="display:none;"></div>
+                      <div class="col-12 mt-4"><h6 class="text-primary fw-bold border-bottom pb-2">Detail Alamat Tempat Tinggal</h6></div>
+                      <div class="col-md-6"><label class="form-label fw-bold">Provinsi</label><select class="form-select border-primary" id="peg_provinsi" onchange="muatKabupaten()"></select></div><div class="col-md-6"><label class="form-label fw-bold">Kabupaten / Kota</label><select class="form-select border-primary" id="peg_kabkota" onchange="muatKecamatan()" disabled></select></div>
+                      <div class="col-md-6"><label class="form-label fw-bold">Kecamatan</label><select class="form-select border-primary" id="peg_kecamatan" onchange="muatKelurahan()" disabled></select></div><div class="col-md-6"><label class="form-label fw-bold">Desa / Kelurahan</label><select class="form-select border-primary" id="peg_kelurahan" disabled></select></div>
+                      <div class="col-12"><label class="form-label fw-bold">Jalan / RT / RW / Dusun</label><textarea class="form-control border-primary" id="peg_alamat" rows="2" style="text-transform: uppercase;"></textarea></div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="tab2">
+                    <div class="row g-3">
+                      <h6 class="text-primary fw-bold border-bottom pb-2">A. Data Golongan & Pangkat</h6>
+                      <div class="col-md-4"><label class="form-label fw-bold">Golongan Saat Ini</label><select class="form-select border-primary fw-bold text-primary" id="peg_golongan" onchange="otomatisPangkat(); hitungTotalMasaKerja();"></select></div><div class="col-md-4 req-pns"><label class="form-label fw-bold">Pangkat</label><input type="text" class="form-control bg-light" id="peg_pangkat" readonly></div><div class="col-md-4"><label class="form-label fw-bold">TMT Golongan</label><input type="date" class="form-control" id="peg_tmt_gol"></div>
+                      <div class="col-md-4 req-pppk"><label class="form-label fw-bold text-success">TMT Pengangkatan</label><input type="date" class="form-control border-success" id="peg_tmt_angkat" onchange="hitungTotalMasaKerja()"></div><div class="col-md-4 req-pppk"><label class="form-label fw-bold text-success">Tgl Awal Kontrak</label><input type="date" class="form-control border-success" id="peg_awal_kontrak"></div><div class="col-md-4 req-pppk"><label class="form-label fw-bold text-success">Tgl Akhir Kontrak</label><input type="date" class="form-control border-success" id="peg_akhir_kontrak" onchange="salinAkhirKontrak()"></div>
+                      <h6 class="text-primary fw-bold border-bottom pb-2 mt-4">B. Data Masa Kerja (PNS)</h6>
+                      <div class="row g-3 req-pns bg-light p-3 rounded mx-0 border">
+                        <div class="col-md-6"><label class="form-label">MKG KP Terakhir (Thn & Bln)</label><div class="input-group"><input type="number" class="form-control" id="peg_mkg_thn"><input type="number" class="form-control" id="peg_mkg_bln"></div></div><div class="col-md-6"><label class="form-label text-primary fw-bold">Gol Awal CPNS</label><select class="form-select border-primary" id="peg_gol_awal" onchange="hitungTotalMasaKerja()"><option value="">-- Pilih --</option><option value="I/a">I/a</option><option value="II/a">II/a</option><option value="II/b">II/b</option><option value="II/c">II/c</option><option value="III/a">III/a</option><option value="III.b">III/b</option></select></div>
+                        <div class="col-md-3"><label class="form-label text-success fw-bold">Masa CPNS</label><div class="input-group"><input type="number" class="form-control" id="peg_cpns_thn" placeholder="Thn" oninput="hitungTotalMasaKerja()"><input type="number" class="form-control" id="peg_cpns_bln" placeholder="Bln" oninput="hitungTotalMasaKerja()"></div></div><div class="col-md-3"><label class="form-label text-success fw-bold">Masa PMK</label><div class="input-group"><input type="number" class="form-control" id="peg_pmk_thn" placeholder="Thn" oninput="hitungTotalMasaKerja()"><input type="number" class="form-control" id="peg_pmk_bln" placeholder="Bln" oninput="hitungTotalMasaKerja()"></div></div><div class="col-md-3"><label class="form-label text-danger fw-bold">Masa CLTN</label><div class="input-group"><input type="number" class="form-control border-danger" id="peg_cltn_thn" placeholder="Thn" oninput="hitungTotalMasaKerja()"><input type="number" class="form-control border-danger" id="peg_cltn_bln" placeholder="Bln" oninput="hitungTotalMasaKerja()"></div></div><div class="col-md-3"><label class="form-label text-danger fw-bold">Pemberhentian Smt.</label><div class="input-group"><input type="number" class="form-control border-danger" id="peg_berhenti_thn" placeholder="Thn" oninput="hitungTotalMasaKerja()"><input type="number" class="form-control border-danger" id="peg_berhenti_bln" placeholder="Bln" oninput="hitungTotalMasaKerja()"></div></div>
+                      </div>
+                      <div class="col-12 mt-3"><div class="alert alert-info border-info d-flex align-items-center"><i class="bi bi-calculator fs-3 me-3 text-primary"></i><div><span class="d-block small text-muted mb-1">Masa Kerja Keseluruhan (Otomatis):</span><span id="hasil_masa_kerja" class="fs-4 fw-bold text-primary">0 Tahun 0 Bulan</span></div></div></div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="tab3">
+                    <div class="row g-3">
+                      <h6 class="text-primary fw-bold border-bottom pb-2">A. Penempatan Unit</h6>
+                      <div class="col-md-6"><label class="form-label fw-bold">Sub Unit / Satker <span class="text-danger">*</span></label><select class="form-select border-primary fw-bold text-primary" id="peg_sub_unit" onchange="filterJabatanByUnit()"></select></div><div class="col-md-6"><label class="form-label">Ket. Sub Unit</label><input type="text" class="form-control" id="peg_ket_sub"></div><div class="col-md-12"><label class="form-label fw-bold">Lokasi Kerja</label><select class="form-select" id="peg_lokasi_kerja"><option value="Kompleks Perkantoran Raci">Kompleks Perkantoran Raci</option><option value="Kota Pasuruan">Kota Pasuruan</option><option value="Kecamatan Lainnya">Kecamatan Lainnya...</option></select></div>
+                      <h6 class="text-primary fw-bold border-bottom pb-2 mt-4">B. Detail Jabatan</h6>
+                      <div class="col-md-6"><label class="form-label fw-bold">Jabatan <span class="text-danger">*</span></label><select class="form-select border-primary fw-bold text-success" id="peg_jabatan" onchange="otomatisInfoJabatan()"></select></div><div class="col-md-6"><label class="form-label fw-bold">Jenis Jabatan</label><input type="text" class="form-control bg-light" id="peg_jns_jabatan" readonly></div><div class="col-md-6"><label class="form-label fw-bold">Eselon</label><input type="text" class="form-control bg-light" id="peg_eselon" readonly></div><div class="col-md-6"><label class="form-label fw-bold">Kelas Jabatan</label><input type="text" class="form-control bg-light" id="peg_kelas_jabatan" readonly></div><div class="col-md-4"><label class="form-label fw-bold">TMT Jabatan</label><input type="date" class="form-control" id="peg_tmt_jabatan"></div><div class="col-md-8"><label class="form-label">Ket. Jabatan Tambahan</label><input type="text" class="form-control" id="peg_ket_jabatan"></div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="tab4">
+                    <div class="row g-3">
+                      <h6 class="text-primary fw-bold border-bottom pb-2">A. Pendidikan Terakhir</h6>
+                      <div class="col-md-3"><label class="form-label fw-bold">Jenjang</label><select class="form-select" id="peg_jenjang_pdd"><option value="SD">SD</option><option value="SMP">SMP</option><option value="SMA">SMA</option><option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="S1">S1</option><option value="S2">S2</option><option value="S3">S3</option></select></div><div class="col-md-4"><label class="form-label fw-bold">Program Studi</label><input type="text" class="form-control" id="peg_prodi"></div><div class="col-md-3"><label class="form-label fw-bold">Nama Institusi</label><input type="text" class="form-control" id="peg_institusi"></div><div class="col-md-2"><label class="form-label fw-bold">Tahun Lulus</label><input type="number" class="form-control" id="peg_thn_lulus"></div>
+                      <h6 class="text-primary fw-bold border-bottom pb-2 mt-4">B. Status Kepegawaian</h6>
+                      <div class="col-md-6 mb-3"><label class="form-label fw-bold">Status Pegawai <span class="text-danger">*</span></label><select class="form-select" id="peg_status_aktif" onchange="cekStatusMutasi()"><option value="Aktif">Aktif</option><option value="Pensiun">Pensiun</option><option value="Meninggal">Meninggal</option><option value="Diberhentikan">Diberhentikan</option><option value="Mutasi Keluar">Mutasi ke Unit Kerja Lain</option><option value="Penugasan Keluar">Ditugaskan ke Unit Kerja Lain</option><option value="Mutasi Instansi">Mutasi Keluar Daerah</option><option value="Kepala Desa">Kepala Desa</option><option value="CLTN">CLTN</option></select></div>
+                      <div class="col-md-12 mb-3" id="box_unit_tujuan" style="display: none; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #0d6efd;"><label class="form-label fw-bold text-primary">Pilih Unit Kerja Tujuan <span class="text-danger">*</span></label><select class="form-select border-primary" id="peg_unit_tujuan"></select></div>
+                      <div class="col-md-3"><label class="form-label fw-bold text-danger">Tahun Pensiun (BUP)</label><input type="text" class="form-control bg-light text-danger fw-bold" id="peg_bup_hasil" readonly></div><div class="col-md-3 req-pppk"><label class="form-label fw-bold text-success">Akhir Perjanjian</label><input type="date" class="form-control bg-light" id="peg_akhir_perjanjian" readonly></div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="modal-footer border-0"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" onclick="bersihkanModal()">Tutup</button><button type="button" class="btn btn-primary px-5" id="btnSimpanPegawai" onclick="simpanDataPegawai()" style="display:none;">Simpan Data Pegawai</button></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal fade" id="modalDetailPegawai" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content border-0 shadow-lg"><div class="modal-header bg-info text-white"><h5 class="modal-title fw-bold"><i class="bi bi-person-vcard"></i> Profil Detail Pegawai</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-light p-4" id="area-detail-pegawai"></div></div></div></div>
+    
+    <div class="modal fade" id="modalGantiPassword" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg"><div class="modal-header bg-dark text-white"><h5 class="modal-title fw-bold"><i class="bi bi-shield-lock"></i> Ganti Password Akun</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4 bg-light"><div class="alert alert-warning small mb-4"><i class="bi bi-info-circle-fill"></i> Pastikan untuk mengingat password baru Anda dengan baik setelah mengubahnya.</div><form id="formGantiPassword"><div class="mb-3"><label class="form-label fw-bold text-muted">Password Lama</label><input type="password" class="form-control border-secondary" id="pass_lama" required></div><div class="mb-3"><label class="form-label fw-bold text-primary">Password Baru</label><input type="password" class="form-control border-primary" id="pass_baru" required></div><div class="mb-3"><label class="form-label fw-bold text-primary">Konfirmasi Password Baru</label><input type="password" class="form-control border-primary" id="pass_konfirmasi" required><small class="text-danger fw-bold mt-1" id="msg_pass_tidak_cocok" style="display:none;"><i class="bi bi-exclamation-triangle"></i> Konfirmasi password baru tidak cocok!</small></div><div class="form-check mt-3"><input class="form-check-input" type="checkbox" id="tampilkan_pass" onchange="toggleLihatPassword()"><label class="form-check-label text-muted" for="tampilkan_pass">Tampilkan Password</label></div></form></div><div class="modal-footer border-0"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button><button type="button" class="btn btn-dark fw-bold px-4" onclick="simpanPasswordBaru()">Ubah Password</button></div></div></div></div>
+    
+    <div class="modal fade" id="modalTambahRJ" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header bg-dark text-white"><h5 class="modal-title fw-bold">Tambah Riwayat Jabatan</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-light"><form id="formTambahRJ"><div class="mb-3"><label class="form-label fw-bold">Nama Jabatan</label><input type="text" class="form-control" id="rj_jabatan" required></div><div class="mb-3"><label class="form-label fw-bold">Unit Kerja</label><input type="text" class="form-control" id="rj_unit" required></div><div class="row"><div class="col-6 mb-3"><label class="form-label fw-bold">Nomor SK</label><input type="text" class="form-control" id="rj_nosk"></div><div class="col-6 mb-3"><label class="form-label fw-bold">Tanggal SK</label><input type="date" class="form-control" id="rj_tglsk"></div><div class="col-12"><label class="form-label fw-bold">TMT Jabatan</label><input type="date" class="form-control border-dark" id="rj_tmt" required></div><div class="col-12 mt-3"><label class="form-label fw-bold text-danger"><i class="bi bi-file-pdf"></i> Upload SK Jabatan (PDF)</label><input type="file" class="form-control border-danger" id="rj_file" accept="application/pdf"></div></div></form></div><div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button class="btn btn-dark" onclick="simpanRiwayatPegawai('jabatan')">Simpan Jabatan</button></div></div></div></div>
+    
+    <div class="modal fade" id="modalTambahRP" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title fw-bold">Tambah Riwayat Pendidikan</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-light"><form id="formTambahRP"><div class="mb-3"><label class="form-label fw-bold">Jenjang</label><select class="form-select" id="rp_jenjang" required><option value="SD">SD</option><option value="SMA/SMK">SMA/SMK</option><option value="S1">S1</option><option value="S2">S2</option></select></div><div class="mb-3"><label class="form-label fw-bold">Program Studi</label><input type="text" class="form-control" id="rp_prodi" required></div><div class="mb-3"><label class="form-label fw-bold">Institusi</label><input type="text" class="form-control" id="rp_institusi" required></div><div class="row"><div class="col-5"><label class="form-label fw-bold">Thn Lulus</label><input type="number" class="form-control" id="rp_tahun" required></div><div class="col-7"><label class="form-label fw-bold">No Ijazah</label><input type="text" class="form-control" id="rp_noijazah"></div><div class="col-12 mt-3"><label class="form-label fw-bold text-danger"><i class="bi bi-file-pdf"></i> Upload Ijazah (PDF)</label><input type="file" class="form-control border-danger" id="rp_file" accept="application/pdf"></div></div></form></div><div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button class="btn btn-primary" onclick="simpanRiwayatPegawai('pendidikan')">Simpan Pendidikan</button></div></div></div></div>
+
+    <div class="modal fade" id="modalFormAkun" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title fw-bold" id="titleModalAkun">Buat Akun Baru</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-light"><form id="formAkunAdmin"><input type="hidden" id="akun_is_edit" value="false"><div class="mb-3"><label class="form-label fw-bold">Username</label><input type="text" class="form-control" id="akun_username" required></div><div class="mb-3"><label class="form-label fw-bold">Password</label><input type="text" class="form-control" id="akun_password" required></div><div class="mb-3"><label class="form-label fw-bold">Nama OPD</label><input type="text" class="form-control" id="akun_opd" required></div><div class="row"><div class="col-6 mb-3"><label class="form-label fw-bold">Role Akses</label><select class="form-select" id="akun_role"><option value="User">User Biasa</option><option value="Admin OPD">Admin Dinas (Read-Only)</option><option value="Admin">Administrator</option></select></div><div class="col-6 mb-3"><label class="form-label fw-bold">Status</label><select class="form-select" id="akun_status"><option value="Aktif">Aktif</option><option value="Nonaktif">Nonaktif</option></select></div></div></form></div><div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button class="btn btn-primary" onclick="simpanAkunAdmin()">Simpan Akun</button></div></div></div></div>
+    
+    <div class="modal fade" id="modalAksesMenu" tabindex="-1"><div class="modal-dialog"><div class="modal-content border-danger"><div class="modal-header bg-danger text-white"><h5 class="modal-title fw-bold"><i class="bi bi-ui-checks"></i> Kontrol Akses Menu</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-light"><div class="alert alert-warning py-2 mb-3"><i class="bi bi-info-circle-fill"></i> Atur menu untuk akun: <b id="namaAkunMenu" class="text-danger"></b></div><input type="hidden" id="targetAkunMenu"><div class="list-group"><label class="list-group-item"><input class="form-check-input me-2 cb-menu" type="checkbox" value="peta-jabatan"> Peta Jabatan</label><label class="list-group-item"><input class="form-check-input me-2 cb-menu" type="checkbox" value="input-pegawai"> Input Pegawai</label><label class="list-group-item"><input class="form-check-input me-2 cb-menu" type="checkbox" value="statistik"> Statistik</label><label class="list-group-item"><input class="form-check-input me-2 cb-menu" type="checkbox" value="bezzeting"> Bezzeting</label><label class="list-group-item"><input class="form-check-input me-2 cb-menu" type="checkbox" value="riwayat"> Riwayat</label><label class="list-group-item"><input class="form-check-input me-2 cb-menu" type="checkbox" value="laporan-rekap"> Pengiriman & SPTJM</label></div></div><div class="modal-footer"><button class="btn btn-dark w-100 fw-bold" onclick="simpanPengaturanMenu()"><i class="bi bi-save"></i> Simpan Akses Menu</button></div></div></div></div>
+    
+    <div class="modal fade" id="modalNotifikasiMutasi" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title"><i class="bi bi-bell-fill"></i> Kotak Masuk Persetujuan Pegawai</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-light"><div class="alert alert-info">Ada pegawai diarahkan ke unit Anda.</div><div class="table-responsive"><table class="table table-bordered bg-white"><thead class="table-dark"><tr><th>Asal Unit</th><th>Nama Pegawai</th><th>Tipe Pindah</th><th class="text-center">Aksi Keputusan</th></tr></thead><tbody id="body-tabel-notifikasi"></tbody></table></div></div></div></div></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
