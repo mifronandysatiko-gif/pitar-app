@@ -152,101 +152,142 @@ async function prosesLogin() {
 }
 
 async function initApp(opdName, username) {
-  document.getElementById('opd-name-display').innerText = opdName;
-  document.getElementById('user-account-display').value = username; 
-  
-  const profile = await callGAS('getUserProfile', { username: username });
-  
-  if(profile.status === 'Nonaktif') { 
-    alert("PERINGATAN: Akun Anda telah diblokir oleh Administrator."); 
-    logout(); return; 
-  }
-  
-  window.USER_ROLE = profile.role;
-  
-  if(profile.role === 'Admin OPD') {
-      let style = document.createElement('style');
-      style.innerHTML = `.kolom-aksi { display: none !important; } .btn-add-data { display: none !important; } .hide-on-read-only { display: none !important; }`;
-      document.head.appendChild(style);
-  }
-  
-  const semuaMenu = ['peta-jabatan', 'statistik', 'input-pegawai', 'bezzeting', 'riwayat', 'laporan-rekap'];
-  semuaMenu.forEach(idMenu => {
-    let elMenu = document.getElementById('nav-' + idMenu);
-    if (elMenu) { 
-      if (profile.menus === 'Semua' || (profile.menus && profile.menus.includes(idMenu))) { 
-        elMenu.style.display = 'block'; 
-      } else { elMenu.style.display = 'none'; } 
+  try {
+    // 1. Tampilkan informasi dasar di sidebar
+    document.getElementById('opd-name-display').innerText = opdName;
+    document.getElementById('user-account-display').value = username; 
+    
+    // Tampilkan loading screen sementara menarik data
+    showLoading(true, "Menyiapkan Ruang Kerja Anda...");
+
+    // 2. Tarik Profil User (Role, Status, Menu)
+    const profile = await callGAS('getUserProfile', { username: username });
+    
+    if(profile.status === 'Nonaktif') { 
+      showLoading(false);
+      alert("PERINGATAN: Akun Anda telah diblokir oleh Administrator."); 
+      logout(); 
+      return; 
     }
-  });
-
-  if(profile.role === 'Admin' || profile.role === 'Admin OPD') { 
-      let navAdmin = document.getElementById('nav-admin-panel');
-      let boxSwitcher = document.getElementById('box-admin-switcher');
-      let filterAdmin = document.getElementById('filter-sptjm-admin');
-      let navPencarian = document.getElementById('nav-pencarian-pegawai');
-      
-      if(navAdmin && profile.role === 'Admin') navAdmin.style.display = 'block'; 
-      if(boxSwitcher) boxSwitcher.style.display = 'block';
-      if(filterAdmin) filterAdmin.style.display = 'inline-block';
-      if(navPencarian) navPencarian.style.display = 'block';
-      if (profile.role === 'Admin') {
-          let btnExPeg = document.getElementById('btn-export-pegawai');
-          let btnExBez = document.getElementById('btn-export-bezzeting');
-          let btnExRekap = document.getElementById('btn-export-rekap-opd'); 
-          if (btnExPeg) btnExPeg.style.display = 'inline-block';
-          if (btnExBez) btnExBez.style.display = 'inline-block';
-          if (btnExRekap) btnExRekap.style.display = 'inline-block'; 
+    
+    window.USER_ROLE = profile.role;
+    
+    // 3. Terapkan Batasan Akses (Admin OPD Read-Only)
+    if(profile.role === 'Admin OPD') {
+        let style = document.createElement('style');
+        style.innerHTML = `.kolom-aksi { display: none !important; } .btn-add-data { display: none !important; } .hide-on-read-only { display: none !important; }`;
+        document.head.appendChild(style);
+    }
+    
+    // 4. Sembunyikan / Tampilkan Menu Navigasi
+    const semuaMenu = ['peta-jabatan', 'statistik', 'input-pegawai', 'bezzeting', 'riwayat', 'laporan-rekap'];
+    semuaMenu.forEach(idMenu => {
+      let elMenu = document.getElementById('nav-' + idMenu);
+      if (elMenu) { 
+        if (profile.menus === 'Semua' || (profile.menus && profile.menus.includes(idMenu))) { 
+          elMenu.style.display = 'block'; 
+        } else { 
+          elMenu.style.display = 'none'; 
+        } 
       }
-      
-      const daftarAkun = await callGAS('getDaftarAkunDenganProfil', { adminUsername: username });
-      if(daftarAkun.success) {
-          let groups = {};
-          daftarAkun.data.forEach(akun => {
-              let induk = akun.opdInduk || "Belum Dikelompokkan";
-              if(!groups[induk]) groups[induk] = [];
-              groups[induk].push(akun);
-          });
-          
-          let opts = '';
-          if (profile.role === 'Admin') {
-              opts += `<option value="${username}">-- 🌐 SELURUH KABUPATEN PASURUAN --</option>`;
-              document.getElementById('opd-name-display').innerText = "SELURUH KABUPATEN PASURUAN";
-          } else if (profile.role === 'Admin OPD') {
-              opts += `<option value="${username}">-- 🌐 SELURUH INSTANSI BAWAHAN --</option>`;
-              document.getElementById('opd-name-display').innerText = "SELURUH INSTANSI BAWAHAN";
-          }
-          for(let induk in groups) {
-              let daftarAkunBawahan = groups[induk].filter(akun => akun.username !== username);
-              if(daftarAkunBawahan.length > 0) {
-                  opts += `<optgroup label="Induk: ${induk}">`;
-                  daftarAkunBawahan.forEach(akun => {
-                      let label = akun.role === 'Admin' ? `${akun.namaUnit} (Admin)` : akun.namaUnit;
-                      opts += `<option value="${akun.username}">${label}</option>`;
-                  });
-                  opts += `</optgroup>`;
-              }
-          }
-          const switcher = document.getElementById('admin-opd-switcher');
-          if(switcher) { switcher.innerHTML = opts; switcher.value = username; }
-      }
-  }
+    });
 
-  const config = await callGAS('getPengaturanAplikasi');
-  if(config) {
-      statusAplikasi.earsip = (config.earsip === 'ON');
-      statusAplikasi.lanjut = (config.lanjut === 'ON');
-      statusAplikasi.lanjutPw = (config.lanjutPw === 'ON');
-      if(dataPegawaiGlobal.length > 0) renderTabelPegawai();
+    // 5. Buka Fitur Khusus Admin (Switcher & Pencarian Global)
+    if(profile.role === 'Admin' || profile.role === 'Admin OPD') { 
+        let navAdmin = document.getElementById('nav-admin-panel');
+        let boxSwitcher = document.getElementById('box-admin-switcher');
+        let filterAdmin = document.getElementById('filter-sptjm-admin');
+        let navPencarian = document.getElementById('nav-pencarian-pegawai');
+        
+        if(navAdmin && profile.role === 'Admin') navAdmin.style.display = 'block'; 
+        if(boxSwitcher) boxSwitcher.style.display = 'block';
+        if(filterAdmin) filterAdmin.style.display = 'inline-block';
+        if(navPencarian) navPencarian.style.display = 'block';
+        
+        if (profile.role === 'Admin') {
+            let btnExPeg = document.getElementById('btn-export-pegawai');
+            let btnExBez = document.getElementById('btn-export-bezzeting');
+            let btnExRekap = document.getElementById('btn-export-rekap-opd'); 
+            if (btnExPeg) btnExPeg.style.display = 'inline-block';
+            if (btnExBez) btnExBez.style.display = 'inline-block';
+            if (btnExRekap) btnExRekap.style.display = 'inline-block'; 
+        }
+        
+        // Tarik Opsi Switcher Admin (TIDAK di-await agar tidak memperlambat start)
+        callGAS('getDaftarAkunDenganProfil', { adminUsername: username }).then(daftarAkun => {
+          if(daftarAkun.success) {
+            let groups = {};
+            daftarAkun.data.forEach(akun => {
+                let induk = akun.opdInduk || "Belum Dikelompokkan";
+                if(!groups[induk]) groups[induk] = [];
+                groups[induk].push(akun);
+            });
+            
+            let opts = '';
+            if (profile.role === 'Admin') {
+                opts += `<option value="${username}">-- 🌐 SELURUH KABUPATEN PASURUAN --</option>`;
+                document.getElementById('opd-name-display').innerText = "SELURUH KABUPATEN PASURUAN";
+            } else if (profile.role === 'Admin OPD') {
+                opts += `<option value="${username}">-- 🌐 SELURUH INSTANSI BAWAHAN --</option>`;
+                document.getElementById('opd-name-display').innerText = "SELURUH INSTANSI BAWAHAN";
+            }
+            for(let induk in groups) {
+                let daftarAkunBawahan = groups[induk].filter(akun => akun.username !== username);
+                if(daftarAkunBawahan.length > 0) {
+                    opts += `<optgroup label="Induk: ${induk}">`;
+                    daftarAkunBawahan.forEach(akun => {
+                        let label = akun.role === 'Admin' ? `${akun.namaUnit} (Admin)` : akun.namaUnit;
+                        opts += `<option value="${akun.username}">${label}</option>`;
+                    });
+                    opts += `</optgroup>`;
+                }
+            }
+            const switcher = document.getElementById('admin-opd-switcher');
+            if(switcher) { switcher.innerHTML = opts; switcher.value = username; }
+          }
+        });
+    }
+
+    // 6. Tarik Pengaturan Sistem Tambahan (E-Arsip, Dll)
+    const config = await callGAS('getPengaturanAplikasi');
+    if(config && !config.error) {
+        statusAplikasi.earsip = (config.earsip === 'ON');
+        statusAplikasi.lanjut = (config.lanjut === 'ON');
+        statusAplikasi.lanjutPw = (config.lanjutPw === 'ON');
+        statusAplikasi.tambahPegawai = (config.tambahPegawai === 'ON');
+        statusAplikasi.tambahJabatan = (config.tambahJabatan === 'ON');
+        statusAplikasi.kunciProfil = (config.kunciProfil === 'ON');
+        terapkanBatasanAkses();
+    }
+    
+    // 7. Tarik Data Dasar Secara Paralel (Lebih Cepat)
+    await Promise.all([
+      muatProfilUnit(),
+      loadDaftarUnor(),
+      loadReferensiJabatan(),
+      muatDataPendukungPegawai(),
+      muatTabelPegawaiUtama() // Pakai fungsi khusus agar dataPegawaiGlobal terisi dulu
+    ]);
+
+    // 8. Selesai! Matikan Loading, Buka Beranda
+    showLoading(false);
+    switchPage('beranda');
+    periksaKotakMasukMutasi();
+
+  } catch (error) {
+    showLoading(false);
+    console.error("Gagal inisialisasi App:", error);
+    alert("Terjadi kesalahan saat memuat aplikasi. Silakan muat ulang halaman.");
   }
-  
-  muatProfilUnit(); 
-  loadDaftarUnor(); 
-  loadReferensiJabatan(); 
-  muatDataPendukungPegawai(); 
-  muatTabelPegawai(); 
-  switchPage('beranda');
-  periksaKotakMasukMutasi();
+}
+
+async function muatTabelPegawaiUtama() {
+  const data = await callGAS('getDaftarPegawai', { reqUsername: getActiveUser() });
+  if(data && Array.isArray(data)) { 
+    dataPegawaiGlobal = data; 
+  } else {
+    dataPegawaiGlobal = [];
+  }
 }
 
 async function gantiOPDView() {
